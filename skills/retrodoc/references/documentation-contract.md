@@ -6,15 +6,21 @@ The Retrodoc documentation workflows use this contract. `retrodoc-help` provides
 
 At the start of a top-level invocation, capture the absolute current working directory as `DOCS_ROOT`. This is the documentation destination, even when the source is elsewhere. Keep it fixed if tools later change directory. Write the atlas directly here, not in a new `docs/retrodoc/` subtree. Do not relocate output to the source project when the roots differ. If the user explicitly selects the invocation directory as the source too, keep generated artifacts out of source discovery.
 
-Ask the user: “What is the path to the source code you want to document?” Wait for the answer before source discovery or output creation. If the current request already supplies the source path, use it without asking again. Subskills invoked within that same workflow inherit the established roots; they must not repeat the question. For a new invocation, saved context may suggest a previous source path, but does not replace the user's selection.
+Ask the user: “What is the path to the source code you want to document?” Wait for the answer before source discovery or output creation. If the current request already supplies the source path, including through an explicitly selected Retrodoc ticket, validate and use it without asking again. A ticket's output root must match the captured invocation directory; resolve a mismatch before writing. Subskills invoked within that same workflow inherit the established roots; they must not repeat the question. For a new invocation, saved context may suggest a previous source path, but does not replace the user's selection.
 
-Resolve a relative source path against the captured invocation directory, expand the user's home shorthand, and validate that the resulting `SOURCE_ROOT` is an accessible directory. If it is invalid or unreadable, report the problem and ask for a corrected path; never substitute the current directory. State both resolved roots before proceeding. Read applicable workspace instructions for both locations.
+Resolve a relative source path against the captured invocation directory, expand the user's home shorthand, and validate that the resulting `SOURCE_ROOT` is an accessible directory. If it is invalid or unreadable, report the problem and ask for a corrected path; never substitute the current directory. State both resolved roots before proceeding. Read workspace instructions for both locations, applying the documentary scope rule below.
 
 Inspect code and run source-oriented commands with an explicit working directory of `SOURCE_ROOT` (or a known subdirectory). Resolve output paths against `DOCS_ROOT` and the graph analyzer's `--root` against `SOURCE_ROOT`. Keep the source unchanged by documentation work; if tests/tools would write build products or caches, use an isolated temporary copy or redirect those outputs. Record tests as not run when a suitable execution environment is unavailable.
 
 Save `retrodoc-context.json` in `DOCS_ROOT` with `version: 1`, `source_root` (resolved absolute path), `docs_root` (captured absolute path), and `index` (index filename relative to `DOCS_ROOT`). This is location metadata, not evidence of project behavior. Inspect an existing context before updating: if it identifies a different source project, ask the user how to handle the conflict before replacing or mixing documentation. Never overwrite unrelated files. Reuse a recognized Retrodoc index; otherwise use `README.md` if free or `RETRODOC.md` if an unrelated README exists. Ask about any remaining output-name collision.
 
 On relocation, establish the source path again, update location metadata and regenerate source links. Moving documentation alone cannot preserve relative links into an external source tree.
+
+## Source instructions and documentary scope
+
+Documenting a repository is not developing it. Apply source-project instructions only where they govern the actual documentary work, such as access boundaries, confidentiality and handling source artifacts. Do not automatically activate build/lint/test gates, dependency installation, development setup, ticket/worklog updates, commits, ADR creation or publication routines intended for changing the source project. Their presence alone is not a reason to pause documentation or request an exception. Output-workspace instructions still apply to artifacts written there; higher-priority instructions and explicit user requests remain controlling.
+
+Inspect executable tests as evidence without requiring their execution. Run source checks only when requested or materially useful to resolve a documentary uncertainty, within authorized access and without changing the source. If execution is unavailable or skipped, record that limit and continue source-based documentation. Validate the generated documentation's evidence, links, coverage, graphs and reading edition independently of source-project development gates.
 
 ## Language and exclusive evidence policy
 
@@ -24,7 +30,7 @@ Executable artifacts are the exclusive source of truth for project facts. This i
 
 Executable tests are strong documentary evidence. Inspect their setup, inputs, assertions, fixtures, mocks and skips to establish exactly which behavior they specify. An assertion is evidence of an expected contract; a passing execution additionally verifies the exercised cases in the recorded environment. Mocked integrations, disabled/skipped tests and unexecuted tests have explicit limits. Test names, descriptions and comments alone do not establish behavior.
 
-Do not derive project facts, feature boundaries, business meanings, dependencies or design rationale from README files, ADRs, specifications, glossaries, other documentation, code comments or descriptive docstrings. Do not use them to fill gaps in executable evidence. Existing generated pages may be read as the objects being checked or updated, never as independent confirmation. Follow applicable agent/workspace instructions as operating constraints, not as evidence of project behavior.
+Do not derive project facts, feature boundaries, business meanings, dependencies or design rationale from README files, ADRs, specifications, glossaries, other documentation, code comments or descriptive docstrings. Do not use them to fill gaps in executable evidence. Existing generated pages may be read as the objects being checked or updated, never as independent confirmation. Apply relevant agent/workspace instructions within documentary scope, not as evidence of project behavior.
 
 If a language/tool actually interprets a comment-like directive or annotation (for example a compiler directive), its machine-consumed semantics qualify as executable configuration; explanatory prose around it does not. Cite the active construct and its consumer. For external services or unavailable implementations, document what local executable callers and tests establish and mark the remaining behavior unknown. Do not replace missing code with external documentation.
 
@@ -41,6 +47,8 @@ Default layout:
   retrodoc-context.json
   README.md
   coverage.md
+  tickets/index.md
+  tickets/RD-001.md
   source-index.md
   features/<stable-feature-id>.md
   shared/<concern>.md
@@ -82,6 +90,10 @@ Each feature page contains these sections, sized to the feature. State “not ap
 8. **Evidence and open questions:** test locations and assertion scope, commands actually run/results or “not run”, conflicting evidence, missing pieces and consequences.
 
 The source table is the authoritative feature-to-file mapping. Derive `source-index.md` from all feature tables: each path links back to its features and records its roles. A file can legitimately appear in several features. The reverse index supports impact discovery; it is not a dependency graph.
+
+## Durable tickets and session boundaries
+
+Project-wide documentation uses [the ticket workflow](ticket-workflow.md): discovery/planning first, bounded ticket execution in fresh sessions, then integration and final checks. Explicit full execution may process the queue in one run. A planning pass does not create feature placeholders or mark features documented. Ticket handoffs capture source leads and remaining work; each execution session must verify those leads against current executable artifacts. Keep ticket status separate from feature status.
 
 ## Update discipline
 

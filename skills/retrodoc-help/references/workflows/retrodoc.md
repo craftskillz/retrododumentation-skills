@@ -4,8 +4,10 @@ Produce an evidence-backed description of the project as it exists. Keep the sou
 
 ## Choose the mode
 
-- **Discovery only:** use when the user asks to discover, list or map features first, or explicitly wants to choose features before documentation. Execute Establish locations and Discover and organize, then deliver the discovery inventory and stop before Document and connect.
-- **Full documentation:** use for a request to document the project, including a bare `$retrodoc`. Discover the features yourself, then continue through all phases. The user does not need to supply feature names.
+- **Discover and plan (default):** use for a bare `$retrodoc` or a project-wide documentation request without explicit immediate execution. Discover features and produce a queue of bounded Retrodoc tickets using [the ticket workflow](../ticket-workflow.md), then stop after Pass 1. Users do not need to supply feature names.
+- **Discovery only:** use when the user only asks to discover/list/map features or wants to choose before planning. Deliver the inventory and coverage without tickets or dossiers unless requested.
+- **Execute a ticket:** when the user names an existing ticket, follow Pass 2 of [the ticket workflow](../ticket-workflow.md). Recheck source freshness, finish that ticket and its handoff, then stop unless more work is explicitly requested.
+- **Full execution now:** when the user explicitly asks to complete all documentation now or execute the full queue, create/reconcile the ticket plan first, then process its tickets and integration/validation phases without stopping for permission at each boundary.
 
 A statement that the user does not know the project is not a request to make them name its features. If they ask for guidance rather than execution, follow [retrodoc-help](../../SKILL.md).
 
@@ -15,7 +17,7 @@ Follow the documentation contract's source/output root procedure first: capture 
 
 ## Discover and organize
 
-1. Read applicable project instructions as operating constraints. Discover behavior from implementation, executable tests, manifests, build/task definitions, entry points, route/command/event registrations, schemas and deployment configuration. Use existing documentation only as output to check or update, never as a factual discovery source. Record the inspected revision and local modifications, or a dated snapshot when Git is absent. Scope vendor, generated and build output separately.
+1. Read project instructions for constraints relevant to documentary work, applying the documentation contract's scope rule: analyzing a source repository does not activate its development workflow. Discover behavior from implementation, executable tests, manifests, build/task definitions, entry points, route/command/event registrations, schemas and deployment configuration. Use existing documentation only as output to check or update, never as a factual discovery source. Record the inspected revision and local modifications, or a dated snapshot when Git is absent. Scope vendor, generated and build output separately.
 2. Identify capabilities by actor, trigger and observable outcome. Trace across layers; a folder, class or endpoint is evidence, not automatically a feature. For libraries, public operations are capabilities; for tools, commands and workflows are capabilities. In monorepos, namespace feature IDs by application/domain when names collide.
 3. Create a feature inventory with stable IDs, boundaries, entry points, evidence, status and documentation links. Record shared infrastructure separately. Account for each discovered entry point as a feature, shared concern, excluded item with reason, or unresolved item. State which roots and registration mechanisms were inspected; avoid exhaustive-discovery claims when reflection or unavailable services leave gaps.
 4. Show the proposed grouping while continuing unambiguous work. Ask only about domain boundaries or audience preferences that code cannot settle. Write Markdown in English for developers and LLMs. Use the captured `DOCS_ROOT` as the documentation destination. Derive feature groupings from executable evidence; ask about intended scope when necessary, and keep user preferences distinct from observed behavior.
@@ -30,9 +32,13 @@ Validate cited files and entry points, index links and the stated coverage. Repo
 
 A later selection continues with [retrodoc-feature](retrodoc-feature.md) for the selected items, reusing established roots within the same workflow. A request to document everything continues with the remaining phases below. Keep discovery-only output separate from full-run completion criteria.
 
+## Deliver the planning pass
+
+For default discover-and-plan mode, follow [Pass 1](../ticket-workflow.md) after discovery. Produce the queue and self-contained tickets, validate their coverage/links and publish both formats. Return the next ready ticket and a fresh-session prompt. Do not create placeholder feature dossiers or describe planning as a completed atlas.
+
 ## Document and connect
 
-Read and follow [retrodoc-feature](retrodoc-feature.md) for each in-scope feature. Finish one vertical behavior trace before expanding to the next. Keep inventory statuses accurate. For large projects, save inspected sources, unresolved paths and next steps in `coverage.md` so work can resume without treating unfinished pages as verified.
+For ticket execution or full execution now, read and follow [retrodoc-feature](retrodoc-feature.md) for each in-scope feature. Finish one vertical behavior trace before expanding to the next. Keep inventory statuses accurate. For large projects, save inspected sources, unresolved paths and next steps in `coverage.md` so work can resume without treating unfinished pages as verified.
 
 Read and follow [retrodoc-architecture](retrodoc-architecture.md) to build typed dependency evidence, diagrams and separation findings. Include this phase in a full-project run; a user-limited feature run needs only the relevant dependency slice and its stated limits.
 
@@ -40,7 +46,7 @@ Maintain the index, shared-concern pages, code-derived glossary, reverse source 
 
 ## Verify and deliver
 
-Read and follow [retrodoc-check](retrodoc-check.md). Fix documentation errors within the requested scope. Report pages produced, inspected scope, validation performed, unknowns and unfinished features. Completion means all in-scope inventory items are documented or explicitly unresolved with reasons, and the check report has no unreported failures. Distinguish completed documentation work from unverified runtime behavior.
+Read and follow [retrodoc-check](retrodoc-check.md). Fix documentation errors within the requested scope. Report pages produced, inspected scope, validation performed, unknowns and unfinished features. Full-atlas completion means all in-scope inventory items are documented or explicitly unresolved with reasons, tickets accurately reflect that state, and the check report has no unreported failures. Planning-pass completion is defined separately in the ticket workflow. Distinguish completed documentation work from unverified runtime behavior.
 
 This workflow writes documentation and analysis artifacts. Copying features, refactoring code, publishing docs and opening issues are separate tasks requiring a user request.
 

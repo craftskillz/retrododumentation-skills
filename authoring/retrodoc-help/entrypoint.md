@@ -16,12 +16,14 @@ Read the relevant linked procedure before explaining its detailed behavior. Thes
 | User need | Workflow | Result |
 | --- | --- | --- |
 | Identify features before choosing | [retrodoc](../retrodoc/entrypoint.md), discovery only | Evidence-backed inventory, coverage and a selection of features |
-| Document the whole project | [retrodoc](../retrodoc/entrypoint.md), full documentation | Discovery followed by feature dossiers, architecture analysis and checks |
+| Plan documentation of the whole project | [retrodoc](../retrodoc/entrypoint.md), default planning pass | Feature inventory and self-contained tickets for fresh sessions |
+| Execute one planned ticket | [retrodoc](../retrodoc/entrypoint.md), ticket execution | One checked slice and a durable handoff |
+| Finish the full atlas now | [retrodoc](../retrodoc/entrypoint.md), explicit full execution | Ticket queue followed by dossiers, architecture and checks |
 | Document a selected behavior | [retrodoc-feature](../retrodoc-feature/entrypoint.md) | Behavior, participating files, copy prerequisites and refactoring invariants |
 | Inspect dependencies and separation | [retrodoc-architecture](../retrodoc-architecture/entrypoint.md) | Typed graphs, evidenced cycles and qualified responsibility findings |
 | Verify or refresh documentation | [retrodoc-check](../retrodoc-check/entrypoint.md) | Accuracy/coverage report; documentation updates when requested |
 
-Explain that full documentation discovers features automatically. A feature request can use an observable behavior or entry point instead of an internal feature name. With no feature specified, `retrodoc-feature` offers inventory choices; without an inventory, it offers discovery first.
+Explain that project-wide planning discovers features automatically; users can execute the resulting tickets one per fresh session, or explicitly request the full queue now. Read [the ticket workflow](../retrodoc/references/ticket-workflow.md) for phase and handoff details. A feature request can use an observable behavior or entry point instead of an internal feature name. With no feature specified, `retrodoc-feature` offers inventory choices; without an inventory, it offers discovery first.
 
 ## Give the next prompt
 
@@ -29,7 +31,9 @@ Provide one recommended prompt matched to the goal, not every possible command. 
 
 ```text
 $retrodoc Discover the features first and let me choose which ones to document.
-$retrodoc Document the entire project, starting with feature discovery.
+$retrodoc Plan the documentation tickets for this project.
+$retrodoc Execute only tickets/RD-001.md.
+$retrodoc Complete all documentation now, including all tickets and final checks.
 $retrodoc-feature Help me select a feature from the inventory to document.
 $retrodoc-architecture Analyze dependencies and responsibility concentration.
 $retrodoc-check Check the documentation against current executable artifacts.

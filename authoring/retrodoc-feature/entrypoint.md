@@ -7,6 +7,8 @@ description: Document an existing feature from source, including participating f
 
 Read [the documentation contract](../retrodoc/references/documentation-contract.md), including its English-language and exclusive executable-evidence policy, before tracing the feature. It can run without an existing atlas by creating a minimal index for the requested scope.
 
+When invoked for a Retrodoc ticket, inherit its selected scope and validated roots, follow [the ticket execution and handoff rules](../retrodoc/references/ticket-workflow.md), and stop after that ticket unless the user authorized more. A ticket is not evidence: re-read its executable source leads before accepting claims.
+
 Before discovery, follow the contract's source/output root procedure: capture the invocation directory as `DOCS_ROOT` and ask for the source path unless supplied in the request. In a parent Retrodoc workflow, inherit its validated roots without asking again. All documentation is written directly under `DOCS_ROOT`; source inspection uses `SOURCE_ROOT`.
 
 ## Select the feature

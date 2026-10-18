@@ -7,7 +7,7 @@ A collection of skills for understanding and refactoring existing projects. The 
 | Skill | Use it for |
 | --- | --- |
 | [retrodoc-help](skills/retrodoc-help/SKILL.md) | Choose a workflow and learn how to start |
-| [retrodoc](skills/retrodoc/SKILL.md) | Discover features first, or produce the complete documentation atlas |
+| [retrodoc](skills/retrodoc/SKILL.md) | Plan source-backed documentation tickets, then execute them in bounded sessions |
 | [retrodoc-feature](skills/retrodoc-feature/SKILL.md) | Trace one feature, its source files, contracts and transfer requirements |
 | [retrodoc-architecture](skills/retrodoc-architecture/SKILL.md) | Build dependency evidence, draw diagrams and assess separation |
 | [retrodoc-check](skills/retrodoc-check/SKILL.md) | Check accuracy, references and coverage; refresh when requested |
@@ -75,11 +75,19 @@ $retrodoc Discover features in /work/my-application first and let me choose whic
 
 Discovery writes an index, `coverage.md` and location metadata in the current directory. It lists feature IDs, outcomes, executable entry points and uncertainties, then waits for your selection. It does not generate detailed feature pages or architecture findings yet.
 
-For complete documentation, `$retrodoc Document the entire project` discovers features and continues automatically. Use `$retrodoc-feature` to deepen a selected feature; without a selection, it presents the existing inventory or offers discovery if none exists. `$retrodoc-help` explains these choices without starting analysis.
+By default, `$retrodoc` or a project-wide documentation request discovers features and writes a ticket queue, then stops after that planning pass. Run `$retrodoc Execute only tickets/RD-001.md` from the same documentation workspace in a fresh session. To complete the queue immediately, explicitly request `$retrodoc Complete all documentation now, including all tickets and final checks`. Use `$retrodoc-feature` to deepen a selected feature; without a selection, it presents the existing inventory or offers discovery if none exists. `$retrodoc-help` explains these choices without starting analysis.
+
+## Documentation passes
+
+1. Discover executable entry points and capabilities; clarify only unresolved boundaries; produce the inventory and local ticket queue.
+2. Execute one selected ticket per fresh session. Each ticket carries roots, snapshot, scope, source/test leads, dependencies, exact outputs, acceptance criteria and a durable handoff. Re-read source and check drift on every resume.
+3. Integrate architecture and indexes, then validate the complete Markdown/HTML atlas. Report unfinished or unresolved tickets explicitly.
+
+Ticket completion is distinct from feature status and from runtime test success. Tickets do not authorize application changes or external issue creation. Explicit full-queue execution can cross ticket boundaries without asking again. See the bundled [ticket workflow](skills/retrodoc/references/ticket-workflow.md).
 
 ## Generated documentation
 
-The atlas is written directly into the invocation directory, with `features/`, `architecture/`, indexes and checks. `retrodoc-context.json` records the source and documentation roots. An existing unrelated README is preserved by using `RETRODOC.md` for the index.
+The atlas is written directly into the invocation directory, with `tickets/` first, followed by `features/`, `architecture/`, indexes and checks as tickets are executed. `retrodoc-context.json` records the source and documentation roots. An existing unrelated README is preserved by using `RETRODOC.md` for the index.
 
 Documentation is in English, using Markdown, Mermaid diagrams and a JSON dependency graph. The skills work across programming languages, using the agent and available stack-specific tools to inspect source.
 
@@ -100,7 +108,7 @@ Source tables retain source-root-relative file identities and compute clickable 
 
 All skills and generated documentation are in English. Preserve literal source identifiers, paths and configuration keys.
 
-Project facts come exclusively from executable artifacts: application code, executable tests, scripts, `justfile`, `Dockerfile`, `package.json` scripts/dependencies, CI workflows, schemas, migrations and machine-consumed configuration. README files, ADRs, specifications, glossaries, comments and descriptive docstrings are not factual evidence. Existing documentation is only material to verify/update; applicable agent instructions remain operating constraints.
+Project facts come exclusively from executable artifacts: application code, executable tests, scripts, `justfile`, `Dockerfile`, `package.json` scripts/dependencies, CI workflows, schemas, migrations and machine-consumed configuration. README files, ADRs, specifications, glossaries, comments and descriptive docstrings are not factual evidence. Existing documentation is only material to verify/update; source instructions apply only within documentary scope. Development build/test gates, worklogs, commits and release routines do not automatically apply to read-only documentation.
 
 Executable tests provide strong documentary evidence through their actual assertions and setup. Record whether they were run, skipped or mocked. A passing test verifies the exercised cases in its environment; an unexecuted assertion specifies an expectation. Document disagreements between tests and implementation explicitly. Missing executable evidence stays unknown.
 

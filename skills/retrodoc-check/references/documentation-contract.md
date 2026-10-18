@@ -105,6 +105,10 @@ Re-read relevant source before acting on an old page. Compare recorded snapshots
 
 A human can understand the outcome and navigate to its implementation. An LLM can find contracts, source slices, integration requirements, invariants and unknowns without loading every feature. Links resolve, source roles have evidence, and diagrams match their declared relation types. Coverage and uncertainty are visible; a polished page never substitutes for traced behavior.
 
+## Authoring and tooling
+
+Write documentation content directly as Markdown files, one page at a time. Use the bundled scripts for mechanical work: the [HTML renderer](../scripts/render_html.py) for every HTML page and render check, the [ticket scaffolder](../scripts/scaffold_tickets.py) for ticket pages and queue rows, and the dependency analyzer for graph views. Throwaway commands are fine for read-only discovery, such as listing registrations or counting routes in `SOURCE_ROOT`. Do not write converters, page generators or templating scripts, and do not hold documentation content in code; when a bundled tool cannot do something, report the limitation instead of rebuilding it.
+
 ## Browser-readable edition
 
 Generate Markdown and companion HTML by default, following [the HTML publication contract](html-format.md). Read it before producing or checking output. Markdown is the canonical editorial source; HTML preserves its evidence, limits and substantive content. Deliver a navigable HTML index and sibling HTML pages for the pages in scope. The HTML contract defines collision handling, source hashes, offline diagrams, accessibility, rendering checks and refresh behavior. A presentation source hash is not evidence that source-code behavior is current.

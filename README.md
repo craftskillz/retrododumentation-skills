@@ -126,6 +126,18 @@ python3 skills/retrodoc-architecture/scripts/analyze_graph.py \
 
 The analyzer requires Python 3.9 or newer and only the standard library. It does **not** extract dependencies from arbitrary source languages or verify the meaning of citations. The agent performs that work, records resolution limitations, and inspects candidates before making architectural claims. Shared files are not automatically god objects; cycles are not automatically defects. Suggested changes remain separate from observed architecture.
 
+## Rendering and ticket tools
+
+Every bundle ships two more standard-library scripts so agents never improvise converters or generators:
+
+```sh
+python3 skills/retrodoc/scripts/render_html.py /path/to/documentation           # Markdown -> sibling HTML
+python3 skills/retrodoc/scripts/render_html.py /path/to/documentation --check   # hashes, links, fragments, IDs
+python3 skills/retrodoc/scripts/scaffold_tickets.py /path/to/documentation plan.json
+```
+
+The renderer reads optional `status`/`scope`/`snapshot`/`inspected` front matter, embeds the bundled CSS, rewrites documentation links to HTML, sanitizes inline SVG and skips unchanged pages. The scaffolder turns a disposable planning JSON file into ticket pages and queue rows, validates leads against the source root and never overwrites existing tickets.
+
 ## Development and validation
 
 Edit `authoring/`, the canonical source for instructions, UI metadata, references and the analyzer. Generate and commit the installable `skills/` bundles:

@@ -73,6 +73,20 @@ class PackagingTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertIn('- n0 (a), n1 (b)', result.stdout)
 
+    def test_installed_renderer_works_from_each_bundle(self):
+        with tempfile.TemporaryDirectory() as temp:
+            docs = Path(temp) / 'documentation'
+            docs.mkdir()
+            (docs / 'README.md').write_text('# Atlas\n\nLead.\n')
+            for name in sorted(NAMES):
+                target = Path(temp) / name
+                shutil.copytree(ROOT / 'skills' / name, target)
+                script = target / 'scripts/render_html.py'
+                for args in ([], ['--force'], ['--check']):
+                    result = subprocess.run([sys.executable, str(script), str(docs), *args], text=True, capture_output=True)
+                    self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+                self.assertIn('--accent', (docs / 'index.html').read_text())
+
 
 @unittest.skipUnless(os.environ.get('RETRODOC_SKILLS_COMMAND'), 'Set RETRODOC_SKILLS_COMMAND to run real installer checks')
 class SkillsCliTests(unittest.TestCase):

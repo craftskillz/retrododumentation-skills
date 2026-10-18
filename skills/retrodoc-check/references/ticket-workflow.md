@@ -10,7 +10,30 @@ Write location metadata, the bounded feature inventory, coverage and the queue a
 
 Check every discovered entry point is attributed and every planned deliverable has an owner. Each ticket needs a runnable first inspection step and bounded acceptance criteria. If discovery cannot settle a boundary, create an investigation ticket with a question and completion criterion rather than inventing behavior. Existing partial dossiers may seed tickets but are unverified outputs to recheck, not factual evidence.
 
-Publish paired Markdown/HTML inventory, coverage and ticket pages. Link only existing dossiers. Stop after planning and present the recommended ready ticket with a copyable fresh-session prompt. This is completion of Pass 1, not completion of the atlas. Do not start the first execution ticket in the planning context, even when the eventual request covers the whole project. Save the plan and give the next fresh-session prompt.
+Create ticket pages and queue rows with the bundled [ticket scaffolder](../scripts/scaffold_tickets.py) rather than writing each ticket by hand. Write a temporary planning file outside `DOCS_ROOT`, for example in a scratch directory:
+
+```json
+{"version": 1, "source_root": "<SOURCE_ROOT>",
+ "snapshot": {"revision": "<full sha>", "dirty": "clean", "inspected": "YYYY-MM-DD"},
+ "tickets": [{"id": "RD-001", "type": "feature", "title": "Place an order",
+              "objective": "Document how a customer places an order.", "features": ["orders"],
+              "actor": "Customer submits checkout", "outcome": "Order persisted and confirmation returned",
+              "include": ["..."], "exclude": ["..."],
+              "leads": [{"path": "src/orders.py", "note": "`place_order`"}],
+              "tests": [{"path": "tests/test_orders.py", "note": "assertions not yet inspected"}],
+              "deps": [{"id": "RD-004", "provides": "order model contract"}],
+              "unknowns": ["..."], "first_step": "Read `place_order` in src/orders.py.",
+              "acceptance": ["optional extra criteria"], "outputs": ["optional; defaults by type"]}]}
+```
+
+```sh
+python3 "<installed-skill>/scripts/scaffold_tickets.py" "<DOCS_ROOT>" "<plan.json>" --dry-run
+python3 "<installed-skill>/scripts/scaffold_tickets.py" "<DOCS_ROOT>" "<plan.json>"
+```
+
+The scaffolder validates IDs, types, dependencies and that every lead exists under `SOURCE_ROOT`; it writes nothing when validation fails. It applies the ticket contract template with type-specific acceptance criteria, computes `ready`/`blocked` from dependency status, creates the queue at the saved `ticket_queue` path or appends rows for new tickets, and records ticket status in each ticket's front matter. It never overwrites an existing ticket, so rerunning it after a replan adds only new IDs. Afterwards, edit tickets and the queue directly; the planning file is disposable and is not an authoritative record. Write the index and `coverage.md` as Markdown files directly.
+
+Publish paired Markdown/HTML inventory, coverage and ticket pages by running the [HTML renderer](html-format.md#rendering-with-the-bundled-renderer). Link only existing dossiers. Stop after planning and present the recommended ready ticket with a copyable fresh-session prompt. This is completion of Pass 1, not completion of the atlas. Do not start the first execution ticket in the planning context, even when the eventual request covers the whole project. Save the plan and give the next fresh-session prompt.
 
 ## Workspace recovery and ticket selection
 
@@ -28,7 +51,7 @@ Recovery preserves the session boundary: after planning or executing a different
 
 Each ticket contains enough context to execute without the planning conversation:
 
-- Stable ID, title, type (feature/shared/investigation/architecture/check), status and owning feature IDs.
+- Stable ID, title, type (feature/shared/investigation/architecture/check), status (the `status:` front matter line) and owning feature IDs.
 - Absolute source root, output root, inspected revision and dirty state (or dated non-Git snapshot), plus index/context paths relative to the output root.
 - Observable documentary objective, actor/trigger/outcome where known, included/excluded scope and exact output files. Keep intended behavior separate from observed behavior.
 - Executable starting points: source-root-relative paths, symbols/registrations and tests with the assertion scope already inspected. These are leads to re-read, not proof carried across sessions. Never use repository prose as evidence.

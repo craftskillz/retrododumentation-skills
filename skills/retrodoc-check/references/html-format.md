@@ -12,6 +12,28 @@ Each HTML page identifies its Markdown source, inspected revision/date, renderin
 
 Render documentation links to existing HTML counterparts, retaining fragment semantics through stable IDs. Keep source-code citations pointing to source artifacts, never substitute documentation for evidence. Compute links from each output's actual directory, percent-encode path segments, and preserve known commit permalinks. Display source path and symbol even when a browser cannot open a local source file. Explain local-link limits when hosting is requested. Do not embed an absolute machine path as if it were a portable website link.
 
+## Rendering with the bundled renderer
+
+Produce every HTML page by running the bundled [renderer](../scripts/render_html.py). It needs only Python 3.9+ and the standard library. Resolve `<installed-skill>` to the directory containing the installed top-level `SKILL.md`, even when reading this contract from `references/`:
+
+```sh
+python3 "<installed-skill>/scripts/render_html.py" "<DOCS_ROOT>"                  # render new or changed pages
+python3 "<installed-skill>/scripts/render_html.py" "<DOCS_ROOT>" features/orders.md # render selected pages
+python3 "<installed-skill>/scripts/render_html.py" "<DOCS_ROOT>" --check          # verify without writing
+```
+
+Do not write a Markdown converter, an HTML template or a page generator, and do not embed documentation content in scripts. Write each page's content directly as a Markdown file, then run the renderer. If the renderer fails or lacks a construct you need, report the limitation and leave the affected HTML marked incomplete instead of building a replacement.
+
+The renderer embeds the bundled CSS, adds the source path and SHA-256 meta tags, rewrites documentation links to their HTML counterparts, escapes raw HTML, drops unsafe URL schemes, de-duplicates heading IDs and skips pages whose source hash and index location are unchanged. It never overwrites HTML that lacks Retrodoc source metadata, and it selects and records `retrodoc-index.html` when an unrelated `index.html` exists. Supply page metadata and structure in the Markdown so both formats stay identical:
+
+- Optional front matter between `---` lines at the top of the page: `status`, `scope`, `snapshot` and `inspected` (simple `key: value` lines). These fill the metadata strip.
+- `# Title`, then one plain paragraph: the title and outcome sentence.
+- A `## Key reading` section: rendered as the key-reading callout.
+- Each `##` section becomes a card and a table-of-contents entry; tables, nested lists, blockquotes, fenced code, links and images are supported.
+- Diagrams: a fenced `svg` block is sanitized and embedded. A fenced `mermaid` block immediately followed by its `svg` equivalent renders as that figure with the Mermaid source collapsed below it; a `mermaid` block without one is flagged as an incomplete diagram and fails `--check`.
+
+`--check` verifies source hashes, the source path meta tag, local links and fragments, unique IDs, incomplete diagrams and navigation back to the HTML index, and exits non-zero on any problem. It does not check content parity beyond the hash, accessibility or visual layout; those remain the checks described below.
+
 ## Page anatomy
 
 Use semantic HTML (`header`, labeled `nav`, `main`, `article`, `section`, `footer`) with correct language and a single h1. Include:
@@ -58,7 +80,7 @@ Print CSS removes navigation chrome, retains metadata and evidence, expands anci
 
 ## Verification and delivery
 
-Check each generated page's source hash, Markdown/HTML content parity (including uncertainty and evidence), local links/fragments, unique IDs and navigation back to the chosen HTML index. HTML is a projection: semantic checks still trace claims to executable artifacts.
+Run the renderer with `--check` for each generated page's source hash, local links/fragments, unique IDs and navigation back to the chosen HTML index, and fix what it reports. Content parity holds by construction when every page is rendered from its Markdown; review only content the renderer reported as dropped or incomplete. HTML is a projection: semantic checks still trace claims to executable artifacts.
 
 Open representative index, feature and architecture pages in a real browser when available. Inspect desktop and 375px mobile widths, light/dark themes, keyboard focus, no-script readability and print preview. Check for overlapping labels, clipped diagrams, unreadable tables, stale badges and missing sections. Verify no external resources load. State which visual checks were actually performed; if no browser is available, report visual verification as not run, not passed.
 

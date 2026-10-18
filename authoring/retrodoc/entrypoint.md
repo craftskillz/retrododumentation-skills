@@ -59,4 +59,4 @@ This workflow writes documentation and analysis artifacts. Copying features, ref
 
 ## Publish the local reading edition
 
-Follow [the HTML publication contract](references/html-format.md) and its bundled CSS for canonical Markdown plus sibling HTML pages. Refresh the HTML atlas navigation for pages actually produced. Preserve all evidence and unknowns; label future-state diagrams as proposals. Validate the reading edition and return both entry points. Discovery-only scope remains an inventory and coverage, without feature placeholders.
+Follow [the HTML publication contract](references/html-format.md): write canonical Markdown, then produce sibling HTML pages only by running its bundled renderer, never a hand-written converter. Refresh the HTML atlas navigation for pages actually produced. Preserve all evidence and unknowns; label future-state diagrams as proposals. Validate the reading edition and return both entry points. Discovery-only scope remains an inventory and coverage, without feature placeholders.

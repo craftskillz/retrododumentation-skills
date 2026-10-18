@@ -90,3 +90,7 @@ Re-read relevant source before acting on an old page. Compare recorded snapshots
 ## Quality bar
 
 A human can understand the outcome and navigate to its implementation. An LLM can find contracts, source slices, integration requirements, invariants and unknowns without loading every feature. Links resolve, source roles have evidence, and diagrams match their declared relation types. Coverage and uncertainty are visible; a polished page never substitutes for traced behavior.
+
+## Browser-readable edition
+
+Generate Markdown and companion HTML by default, following [the HTML publication contract](html-format.md). Read it before producing or checking output. Markdown is the canonical editorial source; HTML preserves its evidence, limits and substantive content. Deliver a navigable HTML index and sibling HTML pages for the pages in scope. The HTML contract defines collision handling, source hashes, offline diagrams, accessibility, rendering checks and refresh behavior. A presentation source hash is not evidence that source-code behavior is current.

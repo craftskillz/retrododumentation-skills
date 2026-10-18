@@ -32,3 +32,7 @@ For possible god objects/modules, read high-participation or high-degree candida
 Write `architecture/findings.md` with scope, snapshot, limits, linked diagrams, and findings containing evidence, confidence, impact, counterevidence, proposed separation and behavior-preserving verification. Label proposals distinctly from current architecture. Include “no evidenced findings in the inspected scope” when appropriate.
 
 Keep feature-to-file participation separate from directed dependency views. Feature-level aggregation may introduce apparent cycles absent at file level; label projections and inspect underlying paths. Link findings from affected feature pages and the atlas index. Suggest changes without executing a refactor.
+
+## Publish the local reading edition
+
+Follow [the HTML publication contract](../html-format.md) and its bundled CSS for canonical Markdown plus sibling HTML pages. Refresh the HTML atlas navigation for pages actually produced. Preserve all evidence and unknowns; label future-state diagrams as proposals. Validate the reading edition and return both entry points. Discovery-only scope remains an inventory and coverage, without feature placeholders.

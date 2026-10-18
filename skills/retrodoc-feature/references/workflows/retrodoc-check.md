@@ -14,3 +14,7 @@ Before discovery, follow the contract's source/output root procedure: capture th
 For refreshes, follow [retrodoc-feature](../../SKILL.md) for affected pages, update mappings/snapshots, then reconcile architecture and indexes. Preserve unrelated authored content; within scope, correct or mark unsupported claims and retain unresolved implementation/test contradictions explicitly. Retire removed features explicitly and redirect renamed IDs. Leave untouched pages' verification dates unchanged.
 
 Done when every finding has evidence, impact and disposition (fixed, unresolved, or outside scope), and the report states checks actually performed. A documentation check does not authorize application fixes or feature extraction.
+
+## Check both reading formats
+
+Follow [the HTML publication contract](../html-format.md). Check paired pages for source-hash drift, content/evidence parity, local links and fragments, navigation, diagram fidelity and accessibility. Record visual checks actually performed separately from structural checks. In check-only mode produce `checks.md` and `checks.html`; report other stale or missing HTML without changing it. In refresh/finalization mode regenerate affected HTML after Markdown corrections and preserve untouched inspection snapshots.

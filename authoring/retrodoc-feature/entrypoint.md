@@ -28,3 +28,7 @@ For an ambiguous feature request, present concrete executable-backed matches and
 5. Update the feature index and reverse source index, preserving other feature rows. Add observed dependencies to an existing architecture dataset when its schema is available; otherwise retain evidence in the page for later analysis. Check every source link and material behavioral assertion against inspected files.
 
 Done when all sections are substantive, every listed file has a role and evidence, and readers can distinguish verified behavior from transfer assumptions. Report inspected scope and test execution status. Do not implement suggested changes during documentation.
+
+## Publish the local reading edition
+
+Follow [the HTML publication contract](../retrodoc/references/html-format.md) and its bundled CSS for canonical Markdown plus sibling HTML pages. Refresh the HTML atlas navigation for pages actually produced. Preserve all evidence and unknowns; label future-state diagrams as proposals. Validate the reading edition and return both entry points. Discovery-only scope remains an inventory and coverage, without feature placeholders.

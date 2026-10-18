@@ -34,3 +34,7 @@ $retrodoc-check Refresh the documentation against current executable artifacts.
 Mention the two-location model: execution asks for the source path unless supplied, and writes documentation directly into the invocation directory. The source can be elsewhere. Output is English; factual evidence comes exclusively from executable artifacts and tests, not ADRs, prose documentation or explanatory comments. Read [the contract](../documentation-contract.md) if the user needs details about evidence, paths or output structure.
 
 Conclude guidance once the user has a recommended workflow, an explanation of its result and a usable prompt. If they ask to execute that workflow, read and follow the selected bundled procedure, establish its roots once and honor the chosen mode. A request for help alone does not authorize a full documentation run.
+
+## Browser reading
+
+Explain that executed documentation workflows produce both canonical Markdown and a navigable, offline HTML edition. Read [the HTML publication contract](../html-format.md) when explaining presentation or refresh behavior. Help alone still creates no files.

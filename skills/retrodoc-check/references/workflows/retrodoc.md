@@ -43,3 +43,7 @@ Maintain the index, shared-concern pages, code-derived glossary, reverse source 
 Read and follow [retrodoc-check](../../SKILL.md). Fix documentation errors within the requested scope. Report pages produced, inspected scope, validation performed, unknowns and unfinished features. Completion means all in-scope inventory items are documented or explicitly unresolved with reasons, and the check report has no unreported failures. Distinguish completed documentation work from unverified runtime behavior.
 
 This workflow writes documentation and analysis artifacts. Copying features, refactoring code, publishing docs and opening issues are separate tasks requiring a user request.
+
+## Publish the local reading edition
+
+Follow [the HTML publication contract](../html-format.md) and its bundled CSS for canonical Markdown plus sibling HTML pages. Refresh the HTML atlas navigation for pages actually produced. Preserve all evidence and unknowns; label future-state diagrams as proposals. Validate the reading edition and return both entry points. Discovery-only scope remains an inventory and coverage, without feature placeholders.

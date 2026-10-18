@@ -3,9 +3,11 @@ name: retrodoc-feature
 description: Document an existing feature from source, including participating files, behavior contracts, and copying or refactoring guidance. Use for a focused feature dossier, not implementing the copy or refactor.
 ---
 
+This skill is independently installable. Supporting workflows and tools are bundled locally; follow their links only when needed. Companion skills do not need to be installed. Use bundled procedures directly when this workflow calls for them.
+
 # Document a feature
 
-Read [the documentation contract](../retrodoc/references/documentation-contract.md), including its English-language and exclusive executable-evidence policy, before tracing the feature. This skill requires the sibling `retrodoc` folder; it can run without an existing atlas by creating a minimal index for the requested scope.
+Read [the documentation contract](references/documentation-contract.md), including its English-language and exclusive executable-evidence policy, before tracing the feature. It can run without an existing atlas by creating a minimal index for the requested scope.
 
 Before discovery, follow the contract's source/output root procedure: capture the invocation directory as `DOCS_ROOT` and ask for the source path unless supplied in the request. In a parent Retrodoc workflow, inherit its validated roots without asking again. All documentation is written directly under `DOCS_ROOT`; source inspection uses `SOURCE_ROOT`.
 
@@ -15,7 +17,7 @@ Accept a feature ID/name, an observable behavior, or an entry-point reference; a
 
 If the user supplies no feature, inspect the inventory in `DOCS_ROOT` after establishing the source root. Use it as a navigation aid only: verify its source identity and candidate entry points against current executable artifacts before presenting choices. Show stable IDs, short outcomes and statuses, then ask which feature or subset to document. Wait for the selection; do not choose an arbitrary feature or ask the user to invent names.
 
-If no usable inventory exists, explain that discovery identifies features from code and offer to run [retrodoc in discovery-only mode](../retrodoc/SKILL.md). If the user already requested discovery, proceed; otherwise wait for acceptance. Reuse the established roots, produce the inventory, and let the user select from it before returning here. If discovery finds no supported candidates, report the inspected scope and gaps rather than inventing a feature list.
+If no usable inventory exists, explain that discovery identifies features from code and offer to run [retrodoc in discovery-only mode](references/workflows/retrodoc.md). If the user already requested discovery, proceed; otherwise wait for acceptance. Reuse the established roots, produce the inventory, and let the user select from it before returning here. If discovery finds no supported candidates, report the inspected scope and gaps rather than inventing a feature list.
 
 For an ambiguous feature request, present concrete executable-backed matches and ask the user to choose. Once selected, continue with the trace below.
 

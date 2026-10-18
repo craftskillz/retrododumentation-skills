@@ -1,0 +1,16 @@
+# Check or refresh documentation
+
+Read [the documentation contract](../documentation-contract.md), including its English-language and exclusive executable-evidence policy. Default to a check report; update pages when requested or when called as the final phase of a documentation run.
+
+
+Before discovery, follow the contract's source/output root procedure: capture the invocation directory as `DOCS_ROOT` and ask for the source path unless supplied in the request. In a parent Retrodoc workflow, inherit its validated roots without asking again. All documentation is written directly under `DOCS_ROOT`; source inspection uses `SOURCE_ROOT`.
+
+1. Read index, page snapshots and coverage. Compare current source against those snapshots. Include local/untracked changes; without a recoverable baseline, state that freshness needs direct reinspection. Inspect registrations for new/deleted capabilities, not only files already indexed.
+2. Check local documentation/source links, symbols, feature IDs, source-table roles and agreement with the reverse index. Report missing files, moved symbols, orphan pages and undocumented entry points. Resolve Markdown links relative to their document and graph evidence paths relative to `SOURCE_ROOT`. Validate `retrodoc-context.json` against the established roots and check cross-directory source links, including after relocation.
+3. Review accuracy separately from structure: trace material behavioral claims and copy prerequisites exclusively to executable artifacts and test assertions. Reject ADRs, other documentation, comments and descriptive docstrings as factual support. Check that generated prose is English while source identifiers remain exact. Treat executable tests as strong contract evidence and record assertion scope, mocking, skips and execution status. Check dependency closure, inbound consumers and contracts. When sampling, name checked claims/features and leave unsampled pages unverified; a link check cannot verify semantics.
+4. Validate dependency data and regenerate relevant typed graph views with the bundled [architecture analyzer](../../scripts/analyze_graph.py). Review edge evidence and relation types manually. Check findings distinguish cycles, shared participation and heuristic god-object candidates. Recompute affected views after edge/node changes.
+5. Write `checks.md` with scope/snapshot, structural results, behavioral accuracy results, commands/results, unresolved discrepancies and page statuses. Preserve historical execution results with dates; don't turn “tests found” into “tests passed”.
+
+For refreshes, follow [retrodoc-feature](../../SKILL.md) for affected pages, update mappings/snapshots, then reconcile architecture and indexes. Preserve unrelated authored content; within scope, correct or mark unsupported claims and retain unresolved implementation/test contradictions explicitly. Retire removed features explicitly and redirect renamed IDs. Leave untouched pages' verification dates unchanged.
+
+Done when every finding has evidence, impact and disposition (fixed, unresolved, or outside scope), and the report states checks actually performed. A documentation check does not authorize application fixes or feature extraction.

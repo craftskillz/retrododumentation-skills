@@ -1,0 +1,35 @@
+name: Validate skills
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check generated bundles
+        run: python scripts/build_skills.py --check
+      - name: Install latest Skills CLI for integration checks
+        run: npm install --prefix "$RUNNER_TEMP/retrodoc-cli" --ignore-scripts --no-audit --no-fund skills@latest
+      - name: Test graph analysis and individual agent installations
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          DO_NOT_TRACK: '1'
+          DISABLE_TELEMETRY: '1'
+        run: |
+          export RETRODOC_SKILLS_COMMAND="node $RUNNER_TEMP/retrodoc-cli/node_modules/skills/bin/cli.mjs"
+          $RETRODOC_SKILLS_COMMAND --version
+          python -m unittest discover -s tests -v

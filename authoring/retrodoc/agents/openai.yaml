@@ -1,0 +1,3 @@
+interface:
+  display_name: "Retrodoc"
+  short_description: "Document a project by feature with source evidence"

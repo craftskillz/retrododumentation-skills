@@ -3,9 +3,11 @@ name: retrodoc-architecture
 description: Analyze source dependencies around documented features, draw diagrams, and identify evidenced cycles or possible god objects. Use to assess separation and refactoring impact in an existing project.
 ---
 
+This skill is independently installable. Supporting workflows and tools are bundled locally; follow their links only when needed. Companion skills do not need to be installed. Use bundled procedures directly when this workflow calls for them.
+
 # Analyze feature architecture
 
-Read [the documentation contract](../retrodoc/references/documentation-contract.md) and [graph rules](references/graph.md). This skill requires the sibling `retrodoc` folder. If feature pages are absent, discover a minimal feature/source mapping for the requested scope first and mark it provisional.
+Read [the documentation contract](references/documentation-contract.md) and [graph rules](references/graph.md). If feature pages are absent, discover a minimal feature/source mapping for the requested scope first and mark it provisional.
 
 
 Before discovery, follow the contract's source/output root procedure: capture the invocation directory as `DOCS_ROOT` and ask for the source path unless supplied in the request. In a parent Retrodoc workflow, inherit its validated roots without asking again. All documentation is written directly under `DOCS_ROOT`; source inspection uses `SOURCE_ROOT`.
@@ -20,7 +22,7 @@ Choose one granularity per dataset: file, symbol or module. Resolve aliases, re-
 
 ## Compute and interpret
 
-Write `architecture/dependencies.json`. Run the bundled analyzer with actual graph and project paths:
+Write `architecture/dependencies.json`. Run the bundled [analyzer](scripts/analyze_graph.py) with actual graph and project paths. Resolve `<installed-skill>` to the directory containing the installed top-level `SKILL.md`, even when reading this procedure from `references/workflows/`:
 
 ```sh
 python3 "<installed-skill>/scripts/analyze_graph.py" "<DOCS_ROOT>/architecture/dependencies.json" --root "<SOURCE_ROOT>" --kind import > "<DOCS_ROOT>/architecture/dependencies.md"

@@ -16,7 +16,34 @@ These skills describe the implemented system. They do not copy features, refacto
 
 ## Install and invoke
 
-Copy all five `skills/retrodoc*` directories together into the documentation workspace's `.agents/skills/` directory, retaining their sibling layout. Launch the agent in that workspace; the source project can be elsewhere. Inspect existing destinations before copying so you preserve any local customizations. They share a contract in `retrodoc/references/`; installing an individual companion without that folder leaves a missing dependency. Matt Pocock's collection is not a runtime dependency.
+Install through the [Skills CLI](https://github.com/vercel-labs/skills). Once the repository is published, run this in your documentation workspace:
+
+```sh
+npx skills@latest add craftskillz/retrododumentation-skills
+```
+
+The CLI provides skill selection, target-agent selection and installation options. Each of the five skills is independently installable: its supporting procedures, references and tools are included. You do not need to select the whole suite or install Matt Pocock's skills.
+
+For example, install just the complete documentation workflow for Codex:
+
+```sh
+npx skills@latest add craftskillz/retrododumentation-skills --skill retrodoc --agent codex
+```
+
+To install the full suite for Codex and Claude Code:
+
+```sh
+npx skills@latest add craftskillz/retrododumentation-skills --skill '*' --agent codex claude-code
+```
+
+For a local checkout, use the absolute path to its `skills/` directory instead of the GitHub source. This also avoids discovering third-party skills you may have installed locally while developing this repository:
+
+```sh
+npx skills@latest add /path/to/refactoring-skills/skills --list
+npx skills@latest add /path/to/refactoring-skills/skills
+```
+
+Launch your agent in the documentation workspace after installation; the source project can be elsewhere. The `$skill-name` examples below use Codex syntax; other agents may expose different invocation syntax. Installing a skill configures an agent, not its underlying model.
 
 Example Codex prompts after installation:
 
@@ -87,13 +114,29 @@ python3 skills/retrodoc-architecture/scripts/analyze_graph.py \
   --root /path/to/project --kind import
 ```
 
-It requires Python 3.9 or newer and only the standard library. It does **not** extract dependencies from arbitrary source languages or verify the meaning of citations. The agent performs that work, records resolution limitations, and inspects candidates before making architectural claims. Shared files are not automatically god objects; cycles are not automatically defects. Suggested changes remain separate from observed architecture.
+The analyzer requires Python 3.9 or newer and only the standard library. It does **not** extract dependencies from arbitrary source languages or verify the meaning of citations. The agent performs that work, records resolution limitations, and inspects candidates before making architectural claims. Shared files are not automatically god objects; cycles are not automatically defects. Suggested changes remain separate from observed architecture.
 
-## Validation
+## Development and validation
+
+Edit `authoring/`, the canonical source for instructions, UI metadata, references and the analyzer. Generate and commit the installable `skills/` bundles:
 
 ```sh
+python3 scripts/build_skills.py
+python3 scripts/build_skills.py --check
 python3 -m unittest discover -s tests -v
 ```
+
+The generator rewrites links to local bundled resources and removes discovery metadata from supporting workflow documents. Only the five public `SKILL.md` entrypoints are exposed to installers. Shared procedures are maintained once in `authoring/`; generated copies are committed so consumers need no build step. Agents read supporting procedures on demand.
+
+Run the real installer checks locally with:
+
+```sh
+RETRODOC_SKILLS_COMMAND="npx --yes skills@latest" python3 -m unittest discover -s tests -v
+```
+
+Without that variable, installer integration checks are skipped. CI installs `skills@latest` and runs them automatically. The checks discover exactly five skills, install each separately for Codex and Claude Code in both copy and symlink modes, and verify that installed resources are complete and all local links remain within the selected skill. Other agent targets are handled by the Skills CLI but are not covered by this integration suite.
+
+Commit `authoring/`, generated `skills/`, `scripts/`, `tests/`, `.github/`, `.gitignore` and this README. Keep locally installed third-party skills and their lockfile out of the published repository.
 
 Tests exercise cyclic groups, self-loops, non-cyclic tails, typed-edge isolation, shared participation, invalid evidence, CLI behavior, label escaping and long graphs.
 

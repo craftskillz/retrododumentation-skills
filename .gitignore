@@ -1,0 +1,13 @@
+# Locally installed development skills
+/.agents/skills/
+/skills-lock.json
+
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# macOS
+.DS_Store
+

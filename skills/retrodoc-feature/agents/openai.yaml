@@ -1,0 +1,3 @@
+interface:
+  display_name: "Retrodoc Feature"
+  short_description: "Trace a feature for understanding, reuse and refactoring"

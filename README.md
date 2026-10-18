@@ -75,7 +75,7 @@ $retrodoc Discover features in /work/my-application first and let me choose whic
 
 Discovery writes an index, `coverage.md` and location metadata in the current directory. It lists feature IDs, outcomes, executable entry points and uncertainties, then waits for your selection. It does not generate detailed feature pages or architecture findings yet.
 
-By default, `$retrodoc` or a project-wide documentation request discovers features and writes a ticket queue, then stops after that planning pass. Run `$retrodoc Execute only tickets/RD-001.md` from the same documentation workspace in a fresh session. To complete the queue immediately, explicitly request `$retrodoc Complete all documentation now, including all tickets and final checks`. Use `$retrodoc-feature` to deepen a selected feature; without a selection, it presents the existing inventory or offers discovery if none exists. `$retrodoc-help` explains these choices without starting analysis.
+By default, `$retrodoc` or a project-wide documentation request discovers features and writes a ticket queue, then stops after that planning pass. Run `$retrodoc Execute only tickets/RD-001.md` from the same documentation workspace in a fresh session. The planning session stops before ticket execution. A request to complete the whole project still uses one fresh conversation per ticket, including the architecture and final validation tickets. Use `$retrodoc-feature` to deepen a selected feature; without a selection, it presents the existing inventory or offers discovery if none exists. `$retrodoc-help` explains these choices without starting analysis.
 
 ## Documentation passes
 
@@ -83,7 +83,7 @@ By default, `$retrodoc` or a project-wide documentation request discovers featur
 2. Execute one selected ticket per fresh session. Each ticket carries roots, snapshot, scope, source/test leads, dependencies, exact outputs, acceptance criteria and a durable handoff. Re-read source and check drift on every resume.
 3. Integrate architecture and indexes, then validate the complete Markdown/HTML atlas. Report unfinished or unresolved tickets explicitly.
 
-Ticket completion is distinct from feature status and from runtime test success. Tickets do not authorize application changes or external issue creation. Explicit full-queue execution can cross ticket boundaries without asking again. See the bundled [ticket workflow](skills/retrodoc/references/ticket-workflow.md).
+Ticket completion is distinct from feature status and from runtime test success. Tickets do not authorize application changes or external issue creation. Each ticket ends with a durable handoff and the next fresh-session prompt. Reusing the same conversation, including after compaction, does not provide a fresh context. Reading only the selected ticket and required evidence bounds context growth; actual cost savings are not guaranteed. See the bundled [ticket workflow](skills/retrodoc/references/ticket-workflow.md).
 
 ## Generated documentation
 

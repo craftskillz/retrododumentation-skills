@@ -93,7 +93,7 @@ The source table is the authoritative feature-to-file mapping. Derive `source-in
 
 ## Durable tickets and session boundaries
 
-Project-wide documentation uses [the ticket workflow](ticket-workflow.md): discovery/planning first, bounded ticket execution in fresh sessions, then integration and final checks. Explicit full execution may process the queue in one run. A planning pass does not create feature placeholders or mark features documented. Ticket handoffs capture source leads and remaining work; each execution session must verify those leads against current executable artifacts. Keep ticket status separate from feature status.
+Project-wide documentation uses [the ticket workflow](ticket-workflow.md): discovery/planning first, bounded ticket execution in fresh sessions, then integration and final checks. Planning has its own context, and each ticket executes in a separate fresh context. A whole-project request preserves the eventual scope without merging ticket sessions. Do not continue from planning into ticket execution or from one ticket to another in the same conversation. A planning pass does not create feature placeholders or mark features documented. Ticket handoffs capture source leads and remaining work; each execution session must verify those leads against current executable artifacts. Keep ticket status separate from feature status.
 
 ## Update discipline
 

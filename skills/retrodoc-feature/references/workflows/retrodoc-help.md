@@ -13,12 +13,12 @@ Read the relevant linked procedure before explaining its detailed behavior. Thes
 | Identify features before choosing | [retrodoc](retrodoc.md), discovery only | Evidence-backed inventory, coverage and a selection of features |
 | Plan documentation of the whole project | [retrodoc](retrodoc.md), default planning pass | Feature inventory and self-contained tickets for fresh sessions |
 | Execute one planned ticket | [retrodoc](retrodoc.md), ticket execution | One checked slice and a durable handoff |
-| Finish the full atlas now | [retrodoc](retrodoc.md), explicit full execution | Ticket queue followed by dossiers, architecture and checks |
+| Complete the whole atlas across sessions | [retrodoc](retrodoc.md), ticket workflow | Planning, one ticket per fresh context, then separate integration/check tickets |
 | Document a selected behavior | [retrodoc-feature](../../SKILL.md) | Behavior, participating files, copy prerequisites and refactoring invariants |
 | Inspect dependencies and separation | [retrodoc-architecture](retrodoc-architecture.md) | Typed graphs, evidenced cycles and qualified responsibility findings |
 | Verify or refresh documentation | [retrodoc-check](retrodoc-check.md) | Accuracy/coverage report; documentation updates when requested |
 
-Explain that project-wide planning discovers features automatically; users can execute the resulting tickets one per fresh session, or explicitly request the full queue now. Read [the ticket workflow](../ticket-workflow.md) for phase and handoff details. A feature request can use an observable behavior or entry point instead of an internal feature name. With no feature specified, `retrodoc-feature` offers inventory choices; without an inventory, it offers discovery first.
+Explain that project-wide planning discovers features automatically; each resulting ticket runs in a fresh conversation, separate from planning and other tickets. A whole-project request keeps that session boundary. Explain that the agent provides a durable handoff and next-session prompt instead of silently continuing the queue. Read [the ticket workflow](../ticket-workflow.md) for phase and handoff details. A feature request can use an observable behavior or entry point instead of an internal feature name. With no feature specified, `retrodoc-feature` offers inventory choices; without an inventory, it offers discovery first.
 
 ## Give the next prompt
 
@@ -28,7 +28,7 @@ Provide one recommended prompt matched to the goal, not every possible command. 
 $retrodoc Discover the features first and let me choose which ones to document.
 $retrodoc Plan the documentation tickets for this project.
 $retrodoc Execute only tickets/RD-001.md.
-$retrodoc Complete all documentation now, including all tickets and final checks.
+$retrodoc Plan the complete atlas; I will execute each ticket in a fresh conversation.
 $retrodoc-feature Help me select a feature from the inventory to document.
 $retrodoc-architecture Analyze dependencies and responsibility concentration.
 $retrodoc-check Check the documentation against current executable artifacts.

@@ -11,10 +11,10 @@ Produce an evidence-backed description of the project as it exists. Keep the sou
 
 ## Choose the mode
 
-- **Discover and plan (default):** use for a bare `$retrodoc` or a project-wide documentation request without explicit immediate execution. Discover features and produce a queue of bounded Retrodoc tickets using [the ticket workflow](references/ticket-workflow.md), then stop after Pass 1. Users do not need to supply feature names.
+- **Discover and plan (default):** use for a bare `$retrodoc` or any project-wide documentation request that does not select an existing ticket. Discover features and produce a queue of bounded Retrodoc tickets using [the ticket workflow](references/ticket-workflow.md), then stop after Pass 1. Users do not need to supply feature names.
 - **Discovery only:** use when the user only asks to discover/list/map features or wants to choose before planning. Deliver the inventory and coverage without tickets or dossiers unless requested.
-- **Execute a ticket:** when the user names an existing ticket, follow Pass 2 of [the ticket workflow](references/ticket-workflow.md). Recheck source freshness, finish that ticket and its handoff, then stop unless more work is explicitly requested.
-- **Full execution now:** when the user explicitly asks to complete all documentation now or execute the full queue, create/reconcile the ticket plan first, then process its tickets and integration/validation phases without stopping for permission at each boundary.
+- **Execute a ticket:** when the user names an existing ticket, follow Pass 2 of [the ticket workflow](references/ticket-workflow.md). Use a fresh conversation for that ticket, recheck source freshness, finish its bounded work and handoff, then stop.
+A request to document the whole project sets the eventual scope; it does not combine ticket execution into one conversation. Planning and every feature, architecture and validation ticket use separate fresh contexts. Follow the [session boundary rules](references/ticket-workflow.md) even when the full queue is requested. If this conversation already performed planning or another ticket, return the handoff prompt instead of beginning a new ticket here.
 
 A statement that the user does not know the project is not a request to make them name its features. If they ask for guidance rather than execution, follow [retrodoc-help](references/workflows/retrodoc-help.md).
 
@@ -45,7 +45,7 @@ For default discover-and-plan mode, follow [Pass 1](references/ticket-workflow.m
 
 ## Document and connect
 
-For ticket execution or full execution now, read and follow [retrodoc-feature](references/workflows/retrodoc-feature.md) for each in-scope feature. Finish one vertical behavior trace before expanding to the next. Keep inventory statuses accurate. For large projects, save inspected sources, unresolved paths and next steps in `coverage.md` so work can resume without treating unfinished pages as verified.
+For the one ticket selected in a fresh session, read and follow [retrodoc-feature](references/workflows/retrodoc-feature.md) for each in-scope feature. Finish one vertical behavior trace before expanding to the next. Keep inventory statuses accurate. For large projects, save inspected sources, unresolved paths and next steps in `coverage.md` so work can resume without treating unfinished pages as verified.
 
 Read and follow [retrodoc-architecture](references/workflows/retrodoc-architecture.md) to build typed dependency evidence, diagrams and separation findings. Include this phase in a full-project run; a user-limited feature run needs only the relevant dependency slice and its stated limits.
 

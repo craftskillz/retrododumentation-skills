@@ -1,6 +1,6 @@
-# Retrodoc skills
+# Refactoring Skills
 
-Document an existing project by feature, with evidence that humans can read and LLMs can use when copying behavior or planning refactors.
+A collection of skills for understanding and refactoring existing projects. The Retrodoc suite produces feature-oriented documentation grounded in executable code and tests, for humans and LLMs preparing to copy behavior or refactor implementations.
 
 ## Skills
 
@@ -16,8 +16,6 @@ These skills describe the implemented system. They do not copy features, refacto
 ## Install and invoke
 
 Copy all four `skills/retrodoc*` directories together into the documentation workspace's `.agents/skills/` directory, retaining their sibling layout. Launch the agent in that workspace; the source project can be elsewhere. Inspect existing destinations before copying so you preserve any local customizations. They share a contract in `retrodoc/references/`; installing an individual companion without that folder leaves a missing dependency. Matt Pocock's collection is not a runtime dependency.
-
-This workspace protects `.agents/` against writes, so the new skills are delivered in `skills/` and have not been installed into this session's discovery directory. Installation must be done in an environment where the destination is writable.
 
 Example Codex prompts after installation:
 
@@ -40,7 +38,9 @@ The source is inspected under `/work/my-application`, while documentation is wri
 
 ## Generated documentation
 
-The destination is the current directory where you invoke the skill. The skill asks for the source-code path unless you already supplied it. It keeps these two roots separate and writes the atlas directly into the invocation directory, with `features/`, `architecture/`, indexes and checks. `retrodoc-context.json` records both roots. An existing unrelated README is preserved by using `RETRODOC.md` for the index. Generated documentation is in English. Markdown is the readable output, Mermaid represents relationships, and a JSON evidence graph supports repeatable architecture analysis. Executable artifacts remain the exclusive source of truth; generated documentation is a derived view. The design is language-independent; source discovery uses the agent and available stack-specific tools.
+The atlas is written directly into the invocation directory, with `features/`, `architecture/`, indexes and checks. `retrodoc-context.json` records the source and documentation roots. An existing unrelated README is preserved by using `RETRODOC.md` for the index.
+
+Documentation is in English, using Markdown, Mermaid diagrams and a JSON dependency graph. The skills work across programming languages, using the agent and available stack-specific tools to inspect source.
 
 Each feature page contains:
 
@@ -81,11 +81,13 @@ It requires Python 3.9 or newer and only the standard library. It does **not** e
 python3 -m unittest discover -s tests -v
 ```
 
-Tests exercise cyclic groups, self-loops, non-cyclic tails, typed-edge isolation, shared participation, invalid evidence, CLI behavior, label escaping and long graphs. Skill names, required metadata fields, default discovery settings and internal links were checked during creation. The bundled OpenAI validator could not run because this environment lacks PyYAML; an attempt to provision a temporary environment with `uv` failed inside `uv`. Full YAML validation remains outstanding. The workflow still needs a pilot on a representative application to assess the quality and completeness of generated feature documentation; passing analyzer tests does not establish that quality.
+Tests exercise cyclic groups, self-loops, non-cyclic tails, typed-edge isolation, shared participation, invalid evidence, CLI behavior, label escaping and long graphs.
+
+These tests validate the analyzer, not the completeness or accuracy of LLM-generated documentation. Evaluate the workflow on a familiar feature before applying it across a large project.
 
 ## Design origins
 
-The installed collection is identified as `mattpocock/skills` in `skills-lock.json`. All 27 installed skill entrypoints were consulted. The most useful concepts for this set were:
+Retrodoc draws on concepts from Matt Pocock’s `mattpocock/skills` collection:
 
 - `writing-for-agents`: progressive disclosure, clear completion criteria and one authoritative home for each fact.
 - `domain-modeling`: consistent domain vocabulary and explicit contexts, adapted here to derive meanings exclusively from executable artifacts.
@@ -94,4 +96,4 @@ The installed collection is identified as `mattpocock/skills` in `skills-lock.js
 - `tdd`, `to-tickets` and `handoff`: observable behavior, vertical traces and resumable context.
 - `code-review`: separate structural compliance from behavioral accuracy.
 
-OpenAI's bundled `skill-creator` guided skill packaging, metadata, scope and validation. These are newly written workflows, not copies of Matt's implementation/planning flows. In particular, source links are required here even though his ticket/spec guidance avoids paths; retrospective documentation needs traceability, with snapshot metadata and refresh checks to manage staleness. No issue tracker, mandatory interview, external service or multi-agent execution is required.
+OpenAI's bundled `skill-creator` informed packaging, metadata, scope and validation. Retrodoc adapts these ideas to retrospective documentation, with explicit source references, snapshot tracking and refresh checks. Neither collection is required at runtime. No issue tracker, external service or multi-agent execution is required.

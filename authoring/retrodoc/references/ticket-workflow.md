@@ -57,7 +57,7 @@ Each ticket contains enough context to execute without the planning conversation
 - Executable starting points: source-root-relative paths, symbols/registrations and tests with the assertion scope already inspected. These are leads to re-read, not proof carried across sessions. Never use repository prose as evidence.
 - Dependencies by ticket ID and what evidence/deliverable they provide; independent work remains independently ready.
 - Concrete acceptance criteria: relevant behavior/failures/state contracts, participating-file table, copy/refactor limits, source citations, index/coverage updates and HTML parity. Architecture/check tickets use their respective contracts instead of feature-only sections.
-- Known unknowns and a short inspection plan, including the next exact file/symbol to inspect. Record runtime checks separately from documentary checks; application execution is optional unless the user requests it.
+- Known unknowns and a short inspection plan, including the next exact file/symbol to inspect. Record runtime checks separately from documentary checks; application execution is optional unless the user requests it. When the user opts into runtime evidence during planning, add an acceptance criterion such as “Runtime evidence pass requested” to each feature ticket it applies to, so the executing session follows [the runtime evidence pass](runtime-evidence.md) without the planning conversation.
 - Handoff: inspected files/ranges and findings with citations, outputs changed, validations actually run, unresolved paths, remaining work and the next action. Do not dump raw conversation or sensitive values.
 - A fresh-session invocation that names this ticket and tells the agent to work from DOCS_ROOT.
 

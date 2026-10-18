@@ -23,6 +23,7 @@ Read the relevant linked procedure before explaining its detailed behavior. Thes
 | Continue a previous run in a new session | [retrodoc](references/workflows/retrodoc.md), workspace recovery | Saved roots and unfinished/next ready ticket, recovered from the documentation directory |
 | Complete the whole atlas across sessions | [retrodoc](references/workflows/retrodoc.md), ticket workflow | Planning, one ticket per fresh context, then separate integration/check tickets |
 | Document a selected behavior | [retrodoc-feature](references/workflows/retrodoc-feature.md) | Behavior, participating files, copy prerequisites and refactoring invariants |
+| Prepare a feature for copying, with runtime evidence | [retrodoc-feature](references/workflows/retrodoc-feature.md) plus the opt-in [runtime evidence pass](references/runtime-evidence.md) | The dossier plus screenshots, executed checks and an acceptance spec, produced in an isolated copy of the application |
 | Inspect dependencies and separation | [retrodoc-architecture](references/workflows/retrodoc-architecture.md) | Typed graphs, evidenced cycles and qualified responsibility findings |
 | Verify or refresh documentation | [retrodoc-check](references/workflows/retrodoc-check.md) | Accuracy/coverage report; documentation updates when requested |
 
@@ -39,6 +40,7 @@ $retrodoc Execute only tickets/RD-001.md.
 $retrodoc Continue the existing documentation.
 $retrodoc Plan the complete atlas; I will execute each ticket in a fresh conversation.
 $retrodoc-feature Help me select a feature from the inventory to document.
+$retrodoc-feature Document checkout for copying, with the runtime evidence pass.
 $retrodoc-architecture Analyze dependencies and responsibility concentration.
 $retrodoc-check Check the documentation against current executable artifacts.
 $retrodoc-check Refresh the documentation against current executable artifacts.

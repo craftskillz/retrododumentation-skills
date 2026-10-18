@@ -22,13 +22,13 @@ On relocation, resolve the recorded/captured root mismatch with the user, valida
 
 Documenting a repository is not developing it. Apply source-project instructions only where they govern the actual documentary work, such as access boundaries, confidentiality and handling source artifacts. Do not automatically activate build/lint/test gates, dependency installation, development setup, ticket/worklog updates, commits, ADR creation or publication routines intended for changing the source project. Their presence alone is not a reason to pause documentation or request an exception. Output-workspace instructions still apply to artifacts written there; higher-priority instructions and explicit user requests remain controlling.
 
-Inspect executable tests as evidence without requiring their execution. Run source checks only when requested or materially useful to resolve a documentary uncertainty, within authorized access and without changing the source. If execution is unavailable or skipped, record that limit and continue source-based documentation. Validate the generated documentation's evidence, links, coverage, graphs and reading edition independently of source-project development gates.
+Inspect executable tests as evidence without requiring their execution. Run source checks only when requested or materially useful to resolve a documentary uncertainty, within authorized access and without changing the source. Running the application itself (screenshots, browser-driven scenarios, an acceptance spec) requires the user's opt-in and follows [the runtime evidence pass](runtime-evidence.md). If execution is unavailable or skipped, record that limit and continue source-based documentation. Validate the generated documentation's evidence, links, coverage, graphs and reading edition independently of source-project development gates.
 
 ## Language and exclusive evidence policy
 
 Write skill instructions and all generated documentation in English, including headings, explanations, diagram labels, graph notes and check reports. Preserve exact source identifiers, paths, configuration keys and literal values; explain their meaning in English rather than renaming them.
 
-Executable artifacts are the exclusive source of truth for project facts. This includes implementation and executable tests, plus machine-consumed build, deployment and runtime definitions: `justfile`, `Makefile`, `Dockerfile`, Compose files, `package.json` scripts/dependencies, lockfiles, CI workflows, migrations, schemas, templates and configuration actually consumed by tooling or the application. Establish how an artifact participates; its filename alone is not proof. A manifest description is prose, whereas its dependency declarations and scripts define tooling behavior.
+Executable artifacts are the exclusive source of truth for project facts. This includes implementation and executable tests, plus machine-consumed build, deployment and runtime definitions: `justfile`, `Makefile`, `Dockerfile`, Compose files, `package.json` scripts/dependencies, lockfiles, CI workflows, migrations, schemas, templates, stylesheets, UI components, user-facing message catalogs and configuration actually consumed by tooling or the application. Establish how an artifact participates; its filename alone is not proof. A manifest description is prose, whereas its dependency declarations and scripts define tooling behavior.
 
 Executable tests are strong documentary evidence. Inspect their setup, inputs, assertions, fixtures, mocks and skips to establish exactly which behavior they specify. An assertion is evidence of an expected contract; a passing execution additionally verifies the exercised cases in the recorded environment. Mocked integrations, disabled/skipped tests and unexecuted tests have explicit limits. Test names, descriptions and comments alone do not establish behavior.
 
@@ -53,6 +53,8 @@ Default layout:
   tickets/RD-001.md
   source-index.md
   features/<stable-feature-id>.md
+  features/<stable-feature-id>/acceptance.spec.<ext>  (runtime evidence pass only)
+  features/<stable-feature-id>/screenshots/          (runtime evidence pass only)
   shared/<concern>.md
   architecture/dependencies.json
   architecture/dependencies.md
@@ -72,7 +74,7 @@ Distinguish:
 
 - **Observed in source:** directly supported by inspected implementation/configuration.
 - **Test expectation:** strong contract evidence from inspected executable assertions and setup; cite the test and distinguish executed, unexecuted, skipped and mocked coverage.
-- **Executed:** command, environment and actual result observed during this run.
+- **Executed:** command, environment and actual result observed during this run; application runs follow [the runtime evidence pass](runtime-evidence.md).
 - **Inferred:** interpretation, supporting evidence and what would confirm it.
 - **Unknown:** missing evidence and its effect on copying, behavior or analysis.
 
@@ -87,9 +89,11 @@ Each feature page contains these sections, sized to the feature. State “not ap
 3. **Implementation flow:** entry point → decisions → state/integrations → response/event. A small sequence/flow diagram when useful. Label runtime flows separately from import graphs.
 4. **Contracts and dependencies:** public interfaces, data formats, storage/schema and migrations, errors, configuration/flags, external services and relevant ordering, transaction, retry, idempotency or concurrency rules.
 5. **Participating source files:** a table of linked `SOURCE_ROOT`-relative path, symbols, responsibility, participation role (entry point/core/shared/adapter/schema/config/test), and evidence of participation. Include templates, migrations, assets and registration files. Mark shared files and relevant symbols when a file mixes features. Vendor packages are external prerequisites, not thousands of source rows.
-6. **Copying this feature:** behavior to preserve, smallest evidenced source/resource set, transitive local dependencies, shared symbols to retain/adapt, integration/registration points, runtime prerequisites, data assumptions and migrations, portability blockers, and verification scenarios. This is a transfer brief, not a guarantee that copying files works. Distinguish whole-file copying from extracting symbols from a shared file. Record unresolved closure instead of calling it self-contained.
+6. **Copying this feature:** behavior to preserve, smallest evidenced source/resource set, transitive local dependencies, shared symbols to retain/adapt, integration/registration points, runtime prerequisites, data assumptions and migrations, portability blockers, and verification scenarios. This is a transfer brief, not a guarantee that copying files works. Distinguish whole-file copying from extracting symbols from a shared file. Record unresolved closure instead of calling it self-contained. Write it so an agent without source access could rebuild the feature on another stack:
+   - **Known defects: decide, don't replicate.** List apparent defects and risks (silent failures, data-loss paths, missing validation, races) separately from the behavior to preserve, each with its evidence label, so a copy does not reproduce them by accident. Documenting them is not a recommendation to fix them.
+   - **Rebuild specification** for features with a user interface: a UI inventory (screens, regions, components, forms with their fields and validation, interactions, and empty, loading, error and dialog states); the presentation values the feature actually applies, resolved to literal values (layout and breakpoints, colors per theme, typography, spacing that defines the look), including values inherited from shared stylesheets or marked untraced; and the user-facing strings verbatim in the primary locale with their keys. Link screenshots and the acceptance spec when a runtime evidence pass produced them. State “not applicable” for features without a user interface.
 7. **Refactoring this feature:** observable invariants, inbound consumers, affected features/shared state, tests and gaps, plausible seams with tradeoffs, links to architecture findings. Proposed seams remain proposals.
-8. **Evidence and open questions:** test locations and assertion scope, commands actually run/results or “not run”, conflicting evidence, missing pieces and consequences.
+8. **Evidence and open questions:** test locations and assertion scope, commands actually run/results or “not run”, runtime evidence pass results (scenarios run/passed/failed/not run, re-run command) or “not run”, conflicting evidence, missing pieces and consequences.
 
 The source table is the authoritative feature-to-file mapping. Derive `source-index.md` from all feature tables: each path links back to its features and records its roles. A file can legitimately appear in several features. The reverse index supports impact discovery; it is not a dependency graph.
 

@@ -100,7 +100,7 @@ Each feature page contains:
 3. Implementation flow.
 4. Interfaces, data and dependency contracts.
 5. **Participating source files**, with linked paths, symbols, roles and evidence.
-6. Copying guidance: required source/resources, integration points, shared dependencies and blockers.
+6. Copying guidance: required source/resources, integration points, shared dependencies and blockers, known defects not to replicate and, for user-facing features, a rebuild specification (UI inventory, resolved presentation values, verbatim strings).
 7. Refactoring guidance: invariants, consumers, affected features and verification.
 8. Evidence, execution status and open questions.
 
@@ -113,6 +113,8 @@ All skills and generated documentation are in English. Preserve literal source i
 Project facts come exclusively from executable artifacts: application code, executable tests, scripts, `justfile`, `Dockerfile`, `package.json` scripts/dependencies, CI workflows, schemas, migrations and machine-consumed configuration. README files, ADRs, specifications, glossaries, comments and descriptive docstrings are not factual evidence. Existing documentation is only material to verify/update; source instructions apply only within documentary scope. Development build/test gates, worklogs, commits and release routines do not automatically apply to read-only documentation.
 
 Executable tests provide strong documentary evidence through their actual assertions and setup. Record whether they were run, skipped or mocked. A passing test verifies the exercised cases in its environment; an unexecuted assertion specifies an expectation. Document disagreements between tests and implementation explicitly. Missing executable evidence stays unknown.
+
+Running the application is opt-in. When requested (for example `$retrodoc-feature Document checkout for copying, with the runtime evidence pass.`), the feature workflow runs an isolated copy of the inspected revision with synthetic data and neutralized side effects, then drives it with a scripted browser test. It records `Executed` results for open questions and writes screenshots and an executable acceptance spec under `features/<feature-id>/`, so the copy can be verified against the same spec. Scripted runs keep token cost low: logs and screenshots stay on disk and only failures are read. See the bundled [runtime evidence pass](skills/retrodoc/references/runtime-evidence.md).
 
 ## Architecture analysis
 

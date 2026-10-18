@@ -6,7 +6,8 @@ A collection of skills for understanding and refactoring existing projects. The 
 
 | Skill | Use it for |
 | --- | --- |
-| [retrodoc](skills/retrodoc/SKILL.md) | Discover capabilities and produce the complete documentation atlas |
+| [retrodoc-help](skills/retrodoc-help/SKILL.md) | Choose a workflow and learn how to start |
+| [retrodoc](skills/retrodoc/SKILL.md) | Discover features first, or produce the complete documentation atlas |
 | [retrodoc-feature](skills/retrodoc-feature/SKILL.md) | Trace one feature, its source files, contracts and transfer requirements |
 | [retrodoc-architecture](skills/retrodoc-architecture/SKILL.md) | Build dependency evidence, draw diagrams and assess separation |
 | [retrodoc-check](skills/retrodoc-check/SKILL.md) | Check accuracy, references and coverage; refresh when requested |
@@ -15,11 +16,12 @@ These skills describe the implemented system. They do not copy features, refacto
 
 ## Install and invoke
 
-Copy all four `skills/retrodoc*` directories together into the documentation workspace's `.agents/skills/` directory, retaining their sibling layout. Launch the agent in that workspace; the source project can be elsewhere. Inspect existing destinations before copying so you preserve any local customizations. They share a contract in `retrodoc/references/`; installing an individual companion without that folder leaves a missing dependency. Matt Pocock's collection is not a runtime dependency.
+Copy all five `skills/retrodoc*` directories together into the documentation workspace's `.agents/skills/` directory, retaining their sibling layout. Launch the agent in that workspace; the source project can be elsewhere. Inspect existing destinations before copying so you preserve any local customizations. They share a contract in `retrodoc/references/`; installing an individual companion without that folder leaves a missing dependency. Matt Pocock's collection is not a runtime dependency.
 
 Example Codex prompts after installation:
 
 ```text
+$retrodoc-help I do not know this project. Where should I start?
 $retrodoc Document this project from source, organized by feature.
 $retrodoc-feature Document checkout, including the source needed to copy its behavior.
 $retrodoc-architecture Analyze the documented features for cycles and concentrated responsibilities.
@@ -35,6 +37,18 @@ $retrodoc Document the source code at /work/my-application.
 ```
 
 The source is inspected under `/work/my-application`, while documentation is written directly under `/work/project-atlas`. With just `$retrodoc`, the skill asks for the source path first. Companion skills follow the same rule when invoked independently; within a full run, they reuse its established roots.
+
+## Start with an unfamiliar project
+
+You do not need to know the feature names. To inspect the inventory before committing to full documentation, use:
+
+```text
+$retrodoc Discover features in /work/my-application first and let me choose which ones to document.
+```
+
+Discovery writes an index, `coverage.md` and location metadata in the current directory. It lists feature IDs, outcomes, executable entry points and uncertainties, then waits for your selection. It does not generate detailed feature pages or architecture findings yet.
+
+For complete documentation, `$retrodoc Document the entire project` discovers features and continues automatically. Use `$retrodoc-feature` to deepen a selected feature; without a selection, it presents the existing inventory or offers discovery if none exists. `$retrodoc-help` explains these choices without starting analysis.
 
 ## Generated documentation
 

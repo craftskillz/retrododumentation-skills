@@ -1,11 +1,18 @@
 ---
 name: retrodoc
-description: Document an existing project from source code, organized by features for humans and LLMs. Use for project retrodocumentation or a complete feature atlas with source traceability.
+description: Document an existing project from source code, organized by features for humans and LLMs. Use to discover features in an unfamiliar project or produce a complete feature atlas with source traceability.
 ---
 
 # Retrodoc
 
-Produce an evidence-backed description of the project as it exists. Keep the source project separate from the invocation directory where documentation is written. These four sibling skills form one bundle; resolve their links relative to this file. Read [the documentation contract](references/documentation-contract.md), especially its English-language and exclusive executable-evidence policy, before discovery or writing. Executable tests are strong documentary evidence; ADRs, other documentation and explanatory comments are not evidence.
+Produce an evidence-backed description of the project as it exists. Keep the source project separate from the invocation directory where documentation is written. These sibling skills form one bundle; resolve their links relative to this file. Read [the documentation contract](references/documentation-contract.md), especially its English-language and exclusive executable-evidence policy, before discovery or writing. Executable tests are strong documentary evidence; ADRs, other documentation and explanatory comments are not evidence.
+
+## Choose the mode
+
+- **Discovery only:** use when the user asks to discover, list or map features first, or explicitly wants to choose features before documentation. Execute Establish locations and Discover and organize, then deliver the discovery inventory and stop before Document and connect.
+- **Full documentation:** use for a request to document the project, including a bare `$retrodoc`. Discover the features yourself, then continue through all phases. The user does not need to supply feature names.
+
+A statement that the user does not know the project is not a request to make them name its features. If they ask for guidance rather than execution, follow [retrodoc-help](../retrodoc-help/SKILL.md).
 
 ## Establish locations
 
@@ -19,6 +26,14 @@ Follow the documentation contract's source/output root procedure first: capture 
 4. Show the proposed grouping while continuing unambiguous work. Ask only about domain boundaries or audience preferences that code cannot settle. Write Markdown in English for developers and LLMs. Use the captured `DOCS_ROOT` as the documentation destination. Derive feature groupings from executable evidence; ask about intended scope when necessary, and keep user preferences distinct from observed behavior.
 
 Done when the index gives a bounded inventory, not just a sample of interesting features.
+
+## Deliver discovery only
+
+For discovery-only requests, write the context file, index and `coverage.md` in `DOCS_ROOT`. The inventory lists stable feature IDs, plain-English names, actors/triggers, outcomes, entry points with executable evidence, boundaries and uncertainties. Mark new entries `discovered`; preserve existing page statuses unless new evidence makes them stale. Link only pages that actually exist; indicate “not yet documented” for missing dossiers rather than creating placeholders or broken links.
+
+Validate cited files and entry points, index links and the stated coverage. Report this as discovery, not a completed feature-documentation or architecture review. Present a numbered selection with stable IDs and short outcomes, and ask which features the user wants to document next. Wait for their selection before producing dossiers. An inventory is complete for the inspected discovery scope when every found entry point is accounted for and unresolved areas are explicit; do not imply the entire project is understood.
+
+A later selection continues with [retrodoc-feature](../retrodoc-feature/SKILL.md) for the selected items, reusing established roots within the same workflow. A request to document everything continues with the remaining phases below. Keep discovery-only output separate from full-run completion criteria.
 
 ## Document and connect
 

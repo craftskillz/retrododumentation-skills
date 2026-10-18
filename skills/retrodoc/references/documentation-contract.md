@@ -1,6 +1,6 @@
 # Documentation contract
 
-All four Retrodoc skills use this contract. Output paths below are relative to `DOCS_ROOT`; source identities and graph evidence paths are relative to `SOURCE_ROOT`. Skill resource links resolve relative to the installed skill file, not either workspace root.
+The Retrodoc documentation workflows use this contract. `retrodoc-help` provides guidance without requiring a source path or creating output; the root-establishment procedure starts when a documentation workflow is executed. Output paths below are relative to `DOCS_ROOT`; source identities and graph evidence paths are relative to `SOURCE_ROOT`. Skill resource links resolve relative to the installed skill file, not either workspace root.
 
 ## Source and output roots: establish before discovery
 

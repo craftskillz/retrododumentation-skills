@@ -11,7 +11,7 @@ Read [the documentation contract](references/documentation-contract.md), includi
 
 When invoked for a Retrodoc ticket, inherit its selected scope and validated roots, follow [the ticket execution and handoff rules](references/ticket-workflow.md), use a fresh conversation for that ticket, and stop after its handoff. Additional tickets require additional fresh contexts. A ticket is not evidence: re-read its executable source leads before accepting claims.
 
-Before discovery, follow the contract's source/output root procedure: capture the invocation directory as `DOCS_ROOT` and ask for the source path unless supplied in the request. In a parent Retrodoc workflow, inherit its validated roots without asking again. All documentation is written directly under `DOCS_ROOT`; source inspection uses `SOURCE_ROOT`.
+Before discovery, follow the contract's source/output root procedure: capture the invocation directory as `DOCS_ROOT`, recover valid saved roots or use supplied roots, and ask for the source path only when neither is available. In a parent Retrodoc workflow, inherit its validated roots without asking again. All documentation is written directly under `DOCS_ROOT`; source inspection uses `SOURCE_ROOT`.
 
 ## Select the feature
 

@@ -63,7 +63,7 @@ For example, launch Codex in `/work/project-atlas` and enter:
 $retrodoc Document the source code at /work/my-application.
 ```
 
-The source is inspected under `/work/my-application`, while documentation is written directly under `/work/project-atlas`. With just `$retrodoc`, the skill asks for the source path first. Companion skills follow the same rule when invoked independently; within a full run, they reuse its established roots.
+The source is inspected under `/work/my-application`, while documentation is written directly under `/work/project-atlas`. In a new workspace, bare `$retrodoc` asks for the source path. In an existing documentation workspace, it restores valid roots from `retrodoc-context.json` and resumes saved work. Companion skills use the same root recovery when invoked independently; within a full run, they reuse its established roots.
 
 ## Start with an unfamiliar project
 
@@ -75,7 +75,9 @@ $retrodoc Discover features in /work/my-application first and let me choose whic
 
 Discovery writes an index, `coverage.md` and location metadata in the current directory. It lists feature IDs, outcomes, executable entry points and uncertainties, then waits for your selection. It does not generate detailed feature pages or architecture findings yet.
 
-By default, `$retrodoc` or a project-wide documentation request discovers features and writes a ticket queue, then stops after that planning pass. Run `$retrodoc Execute only tickets/RD-001.md` from the same documentation workspace in a fresh session. The planning session stops before ticket execution. A request to complete the whole project still uses one fresh conversation per ticket, including the architecture and final validation tickets. Use `$retrodoc-feature` to deepen a selected feature; without a selection, it presents the existing inventory or offers discovery if none exists. `$retrodoc-help` explains these choices without starting analysis.
+In a new workspace, `$retrodoc` or a project-wide documentation request discovers features and writes a ticket queue, then stops after that planning pass. In a fresh session from the same documentation workspace, run `$retrodoc` again: it resumes the sole `in_progress` ticket, or uses the saved `next_ticket` when ready, falling back to the first ready ticket whose dependencies are satisfied. It completes that one ticket and saves its handoff. You can still pin a ticket with `$retrodoc Execute only tickets/RD-001.md`. The planning session stops before ticket execution. A request to complete the whole project still uses one fresh conversation per ticket, including the architecture and final validation tickets. Use `$retrodoc-feature` to deepen a selected feature; without a selection, it presents the existing inventory or offers discovery if none exists. `$retrodoc-help` explains these choices without starting analysis.
+
+Recovery reads location metadata, queue status and the selected ticket's handoff from disk; it does not need the earlier conversation. Completed queues report their status; blocked queues report missing prerequisites. Multiple unfinished tickets require a selection. Missing or conflicting roots require clarification before writing. Launch from the existing documentation directory so the skill can find these artifacts; a different working directory does not identify the previous run. Request a refresh or replan explicitly when you want to revisit the scope.
 
 ## Documentation passes
 

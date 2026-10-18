@@ -13,6 +13,7 @@ Read the relevant linked procedure before explaining its detailed behavior. Thes
 | Identify features before choosing | [retrodoc](retrodoc.md), discovery only | Evidence-backed inventory, coverage and a selection of features |
 | Plan documentation of the whole project | [retrodoc](retrodoc.md), default planning pass | Feature inventory and self-contained tickets for fresh sessions |
 | Execute one planned ticket | [retrodoc](retrodoc.md), ticket execution | One checked slice and a durable handoff |
+| Continue a previous run in a new session | [retrodoc](retrodoc.md), workspace recovery | Saved roots and unfinished/next ready ticket, recovered from the documentation directory |
 | Complete the whole atlas across sessions | [retrodoc](retrodoc.md), ticket workflow | Planning, one ticket per fresh context, then separate integration/check tickets |
 | Document a selected behavior | [retrodoc-feature](retrodoc-feature.md) | Behavior, participating files, copy prerequisites and refactoring invariants |
 | Inspect dependencies and separation | [retrodoc-architecture](../../SKILL.md) | Typed graphs, evidenced cycles and qualified responsibility findings |
@@ -28,6 +29,7 @@ Provide one recommended prompt matched to the goal, not every possible command. 
 $retrodoc Discover the features first and let me choose which ones to document.
 $retrodoc Plan the documentation tickets for this project.
 $retrodoc Execute only tickets/RD-001.md.
+$retrodoc Continue the existing documentation.
 $retrodoc Plan the complete atlas; I will execute each ticket in a fresh conversation.
 $retrodoc-feature Help me select a feature from the inventory to document.
 $retrodoc-architecture Analyze dependencies and responsibility concentration.
@@ -35,7 +37,7 @@ $retrodoc-check Check the documentation against current executable artifacts.
 $retrodoc-check Refresh the documentation against current executable artifacts.
 ```
 
-Mention the two-location model: execution asks for the source path unless supplied, and writes documentation directly into the invocation directory. The source can be elsewhere. Output is English; factual evidence comes exclusively from executable artifacts and tests, not ADRs, prose documentation or explanatory comments. Read [the contract](../documentation-contract.md) if the user needs details about evidence, paths or output structure.
+Mention the two-location model: execution restores valid saved roots, uses an explicitly supplied source path, or asks for one when neither is available. It writes documentation directly into the invocation directory; the source can be elsewhere. In a fresh conversation from an existing documentation directory, bare `$retrodoc` resumes an unfinished ticket or selects the next ready ticket, then stops after that ticket. Output is English; factual evidence comes exclusively from executable artifacts and tests, not ADRs, prose documentation or explanatory comments. Read [the contract](../documentation-contract.md) if the user needs details about evidence, paths or output structure.
 
 Conclude guidance once the user has a recommended workflow, an explanation of its result and a usable prompt. If they ask to execute that workflow, read and follow the selected bundled procedure, establish its roots once and honor the chosen mode. A request for help alone does not authorize a full documentation run.
 

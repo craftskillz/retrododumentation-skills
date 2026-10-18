@@ -2,18 +2,20 @@
 
 Produce an evidence-backed description of the project as it exists. Keep the source project separate from the invocation directory where documentation is written. This skill includes the supporting workflows it needs; resolve resource links relative to the file containing each link. Read [the documentation contract](../documentation-contract.md), especially its English-language and exclusive executable-evidence policy, before discovery or writing. Executable tests are strong documentary evidence; ADRs, other documentation and explanatory comments are not evidence.
 
+## Recover the workspace
+
+Capture the invocation directory as `DOCS_ROOT` and follow the documentation contract's source/output root procedure. Inspect local `retrodoc-context.json` and its saved queue (default `tickets/index.md`) before asking for a source path or choosing a mode. Restore valid saved roots automatically; ask for the source path only when neither the request nor usable workspace metadata supplies it. Pass validated roots to every subskill. Output stays directly in `DOCS_ROOT` throughout the run.
+
 ## Choose the mode
 
-- **Discover and plan (default):** use for a bare `$retrodoc` or any project-wide documentation request that does not select an existing ticket. Discover features and produce a queue of bounded Retrodoc tickets using [the ticket workflow](../ticket-workflow.md), then stop after Pass 1. Users do not need to supply feature names.
+- **Resume (default for an existing workspace):** for bare `$retrodoc` or a request to continue/resume without a new scope, follow [workspace recovery and ticket selection](../ticket-workflow.md#workspace-recovery-and-ticket-selection). Resume the unfinished ticket or execute the next ready ticket in this fresh session. Preserve the inventory, stable IDs, completed outputs and queue. Report completion or blockers when no ticket can run.
+- **Discover and plan (default for a new workspace):** use when no resumable plan exists or the user explicitly requests planning or a new project-wide scope. Discover features and produce a queue of bounded Retrodoc tickets using [the ticket workflow](../ticket-workflow.md), then stop after Pass 1. With a partial inventory, continue planning from its recorded coverage and recheck source leads rather than discarding prior work. Users do not need to supply feature names.
 - **Discovery only:** use when the user only asks to discover/list/map features or wants to choose before planning. Deliver the inventory and coverage without tickets or dossiers unless requested.
 - **Execute a ticket:** when the user names an existing ticket, follow Pass 2 of [the ticket workflow](../ticket-workflow.md). Use a fresh conversation for that ticket, recheck source freshness, finish its bounded work and handoff, then stop.
+
 A request to document the whole project sets the eventual scope; it does not combine ticket execution into one conversation. Planning and every feature, architecture and validation ticket use separate fresh contexts. Follow the [session boundary rules](../ticket-workflow.md) even when the full queue is requested. If this conversation already performed planning or another ticket, return the handoff prompt instead of beginning a new ticket here.
 
 A statement that the user does not know the project is not a request to make them name its features. If they ask for guidance rather than execution, follow [retrodoc-help](../../SKILL.md).
-
-## Establish locations
-
-Follow the documentation contract's source/output root procedure first: capture the invocation directory as `DOCS_ROOT`, ask for the source path unless already supplied, and validate `SOURCE_ROOT`. Pass these roots to every subskill. Output stays directly in `DOCS_ROOT` throughout the run.
 
 ## Discover and organize
 

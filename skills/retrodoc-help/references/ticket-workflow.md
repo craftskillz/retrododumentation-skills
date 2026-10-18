@@ -6,11 +6,23 @@ Use this workflow for project-wide documentation. A first pass creates an eviden
 
 Establish SOURCE_ROOT and DOCS_ROOT using the documentation contract. Inspect executable registrations and representative vertical traces deeply enough to identify capabilities, boundaries and dependencies. Clarify only domain/audience questions that code cannot settle; do not require users to name features. Do not deeply document every feature in this pass.
 
-Write location metadata, the bounded feature inventory, coverage and `tickets/index.md`. Create one stable `RD-NNN` ticket per coherent documentary outcome. Split oversized features by observable behavior; avoid one ticket per file or a ticket that requires understanding the entire product. Add shared-concern tickets only when evidence shows a reusable contract, plus architecture-integration and final-validation tickets. Record actual dependencies; do not impose an arbitrary serial chain. Architecture tickets depend on the source mappings they use; final validation depends on the pages/graphs in scope.
+Write location metadata, the bounded feature inventory, coverage and the queue at the saved `ticket_queue` path (default `tickets/index.md`). Create one stable `RD-NNN` ticket per coherent documentary outcome. Split oversized features by observable behavior; avoid one ticket per file or a ticket that requires understanding the entire product. Add shared-concern tickets only when evidence shows a reusable contract, plus architecture-integration and final-validation tickets. Record actual dependencies; do not impose an arbitrary serial chain. Architecture tickets depend on the source mappings they use; final validation depends on the pages/graphs in scope.
 
 Check every discovered entry point is attributed and every planned deliverable has an owner. Each ticket needs a runnable first inspection step and bounded acceptance criteria. If discovery cannot settle a boundary, create an investigation ticket with a question and completion criterion rather than inventing behavior. Existing partial dossiers may seed tickets but are unverified outputs to recheck, not factual evidence.
 
 Publish paired Markdown/HTML inventory, coverage and ticket pages. Link only existing dossiers. Stop after planning and present the recommended ready ticket with a copyable fresh-session prompt. This is completion of Pass 1, not completion of the atlas. Do not start the first execution ticket in the planning context, even when the eventual request covers the whole project. Save the plan and give the next fresh-session prompt.
+
+## Workspace recovery and ticket selection
+
+For bare `$retrodoc` or a continue/resume request in an existing documentation workspace, recover the saved work before starting discovery:
+
+1. Read local `retrodoc-context.json` when present and its `ticket_queue`, defaulting to `tickets/index.md` when the field is absent. Use the context's index and `coverage.md` only as needed to recover incomplete planning. These artifacts carry location, scope and progress; executable claims still require source reinspection.
+2. Honor an explicitly selected ticket. Otherwise, prefer the sole `in_progress` ticket and its handoff. If several are in progress, present those IDs and ask which to resume. With none in progress, use saved `next_ticket` when it names a ready queue member with satisfied dependencies; otherwise select the first eligible `ready` ticket in queue order. A stale hint to a completed, blocked or absent ticket does not override queue state. Check dependencies and the selected ticket's actual status/acceptance record; a queue label alone cannot satisfy a prerequisite. Preserve blocked, unresolved and completed tickets. Surface missing ticket files or conflicting progress records for repair rather than silently skipping or resetting them.
+3. Read only the selected ticket and required dependency outputs. Validate its roots against the invocation directory and saved context using the documentation contract. If context is absent, matching roots in the selected ticket can restore it after validation. State the recovered roots, ticket and next action, then follow Pass 2 in this fresh conversation without asking the user to supply those paths again.
+4. If every ticket is done, report the recorded completion and any known validation limits, then stop. If no ticket is runnable and work remains, report blocked/unresolved items and missing prerequisites; ask only for information needed to proceed. Neither case restarts discovery or creates a replacement queue. An explicit refresh/replan request can change the scope while preserving existing IDs, outputs and progress where applicable.
+5. If there is no queue, inspect the recognized index and coverage for unfinished discovery/planning. Continue Pass 1 from that handoff, revalidating source leads and preserving completed work. With no saved work, use the ordinary new-workspace planning flow.
+
+Recovery preserves the session boundary: after planning or executing a different ticket in this conversation, return the saved handoff and a fresh-session prompt. A bare invocation in that same conversation does not start another ticket. After planning and each ticket, persist roots, queue path and the recommended `next_ticket` in context, and current status, dependencies, remaining work and next action in the queue/ticket handoff so the next session can recover from disk. An unfinished ticket remains the next recommendation; otherwise recommend an eligible ready ticket or set the hint to null when none is runnable. Refresh dependency readiness as prerequisites finish, without clearing blockers that name other missing requirements.
 
 ## Ticket contract
 
@@ -26,7 +38,7 @@ Each ticket contains enough context to execute without the planning conversation
 - Handoff: inspected files/ranges and findings with citations, outputs changed, validations actually run, unresolved paths, remaining work and the next action. Do not dump raw conversation or sensitive values.
 - A fresh-session invocation that names this ticket and tells the agent to work from DOCS_ROOT.
 
-Keep `tickets/index.md` as the queue with ID, objective, status, dependencies and links. Ticket states are `ready`, `in_progress`, `blocked`, `done`, `unresolved`; these are distinct from feature statuses. A ticket is ready only when its required dependencies are satisfied. Blocked means a named missing prerequisite prevents progress; unresolved means a bounded investigation concluded with an explicit evidence gap accepted by the relevant scope. Neither state silently counts as verified behavior. A ticket is done only after its acceptance criteria and documentary validation are satisfied.
+Maintain the queue at `ticket_queue` (default `tickets/index.md`) with ID, objective, status, dependencies and links; preserve that path during recovery and updates. Ticket states are `ready`, `in_progress`, `blocked`, `done`, `unresolved`; these are distinct from feature statuses. A ticket is ready only when its required dependencies are satisfied. Blocked means a named missing prerequisite prevents progress; unresolved means a bounded investigation concluded with an explicit evidence gap accepted by the relevant scope. Neither state silently counts as verified behavior. A ticket is done only after its acceptance criteria and documentary validation are satisfied.
 
 ## Session boundaries and efficient context loading
 
@@ -38,7 +50,7 @@ The default handoff is a copyable prompt for a new conversation. Do not claim to
 
 ## Pass 2: execute one ticket
 
-An explicit ticket selection supplies the source/output context in that ticket; validate and state the paths rather than asking for the same source selection again. Capture the invocation directory as DOCS_ROOT. If it differs from the ticket's output root, stop to resolve the destination instead of writing into two atlases. Check existing context for source identity conflicts.
+A ticket selected explicitly or through workspace recovery supplies its source/output context; validate and state the paths rather than asking for the same source selection again. Capture the invocation directory as DOCS_ROOT. If it differs from the ticket's output root, stop to resolve the destination instead of writing into two atlases. Check existing context for source identity conflicts.
 
 Read the selected ticket, queue dependencies, applicable documentation contract and only the relevant bundled feature/architecture/check workflow. Compare HEAD and local changes with the ticket snapshot; re-read executable evidence before accepting claims. If drift changes scope or prerequisites, update the ticket/coverage and investigate affected boundaries before continuing. Prior-session prose and hashes do not establish current correctness.
 
@@ -53,6 +65,8 @@ Execute each architecture/integration ticket in its own fresh context to reconci
 ## Fresh-session prompt
 
 Start a new conversation from DOCS_ROOT, then paste this prompt adapted with actual established paths and an existing ticket. Do not paste the planning transcript:
+
+For automatic selection, simply invoke `$retrodoc` in that directory: it resumes the unfinished ticket or selects the next ready one. Use the explicit prompt below to pin a particular ticket.
 
 ```text
 Work from <DOCS_ROOT>. Use $retrodoc to execute only tickets/RD-NNN.md.

@@ -132,6 +132,33 @@ class ScaffoldTests(unittest.TestCase):
         self.assertEqual(render.main([str(self.docs)]), 0)
         self.assertEqual(render.main([str(self.docs), '--check']), 0)
 
+    def test_two_wave_tickets_split_functional_and_technical_pages(self):
+        self.tickets = [
+            dict(id='RD-001', type='functional', title='Orders', objective='Document orders functionally.', features=['orders'],
+                 surfaces=[dict(kind='screen', name='Checkout', access='Cart › Checkout | /checkout')],
+                 leads=[dict(path='src/orders.py')], first_step='Read the checkout screen.'),
+            dict(id='RD-002', type='review', title='Functional review', objective='Ask open questions.',
+                 deps=[dict(id='RD-001')], first_step='Read `questions.md`.'),
+            dict(id='RD-003', type='enrichment', title='Orders internals', objective='Enrich orders.', features=['orders'],
+                 leads=[dict(path='src/orders.py')], deps=[dict(id='RD-001'), dict(id='RD-002')], first_step='Read `place`.')]
+        self.write_plan()
+        self.assertEqual(scaffold.main([str(self.docs), str(self.plan)]), 0)
+        functional, review, enrichment = ((self.docs / f'tickets/RD-00{n}.md').read_text() for n in (1, 2, 3))
+        self.assertIn('| screen | Checkout | Cart › Checkout \\| /checkout |', functional)
+        self.assertIn('`features/orders.md` (functional page)', functional)
+        self.assertNotIn('technical.md', functional)
+        self.assertIn('not asked', functional)
+        self.assertIn('status: blocked', review)
+        self.assertIn('one batch', review)
+        self.assertIn('`features/orders/technical.md` (technical page)', enrichment)
+        self.assertNotIn('## Interaction surfaces', enrichment)
+
+    def test_rejects_surfaces_without_kind_or_name(self):
+        self.tickets[1]['surfaces'] = [dict(name='Checkout')]
+        self.write_plan()
+        self.assertEqual(scaffold.main([str(self.docs), str(self.plan)]), 1)
+        self.assertFalse((self.docs / 'tickets').exists())
+
     def test_never_overwrites_existing_tickets_and_appends_new_rows(self):
         scaffold.main([str(self.docs), str(self.plan)])
         done = (self.docs / 'tickets/RD-001.md')

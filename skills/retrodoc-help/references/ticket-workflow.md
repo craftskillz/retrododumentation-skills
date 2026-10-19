@@ -4,24 +4,33 @@ Use this workflow for project-wide documentation. A first pass creates an eviden
 
 ## Pass 1: discover and plan
 
-Establish SOURCE_ROOT and DOCS_ROOT using the documentation contract. Inspect executable registrations and representative vertical traces deeply enough to identify capabilities, boundaries and dependencies. Clarify only domain/audience questions that code cannot settle; do not require users to name features. Do not deeply document every feature in this pass.
+Establish SOURCE_ROOT and DOCS_ROOT using the documentation contract. Discover features with [surface-first discovery](surface-discovery.md): inventory the interaction surfaces in `surfaces.md`, then group them into features. Ask only targeted questions where grouping signals conflict, and record answers in `questions.md`; do not require users to name features. Do not deeply document every feature in this pass.
 
-Write location metadata, the bounded feature inventory, coverage and the queue at the saved `ticket_queue` path (default `tickets/index.md`). Create one stable `RD-NNN` ticket per coherent documentary outcome. Split oversized features by observable behavior; avoid one ticket per file or a ticket that requires understanding the entire product. Add shared-concern tickets only when evidence shows a reusable contract, plus architecture-integration and final-validation tickets. Record actual dependencies; do not impose an arbitrary serial chain. Architecture tickets depend on the source mappings they use; final validation depends on the pages/graphs in scope.
+Write location metadata, the bounded feature inventory, `surfaces.md`, coverage and the queue at the saved `ticket_queue` path (default `tickets/index.md`). Plan the documentation in two waves, with stable `RD-NNN` IDs, so the user sees the whole application functionally before any technical enrichment:
 
-Check every discovered entry point is attributed and every planned deliverable has an owner. Each ticket needs a runnable first inspection step and bounded acceptance criteria. If discovery cannot settle a boundary, create an investigation ticket with a question and completion criterion rather than inventing behavior. Existing partial dossiers may seed tickets but are unverified outputs to recheck, not factual evidence.
+1. **Wave 1, functional:** one `functional` ticket per feature, carrying its surfaces. It writes the functional page from the outward-facing layer and records open questions without asking them. Then one `review` ticket, depending on every functional ticket: it presents the functional atlas and asks all open questions in one batch.
+2. **Wave 2, enrichment:** one `enrichment` ticket per feature, depending on its functional ticket and on the review ticket. It completes the functional page and writes the technical page from source code, remaining questions and the optional runtime pass.
+
+List every wave-1 ticket before any wave-2 ticket in the queue. When a feature is too large for one session, split its tickets by screen group: each writes its screen pages under `features/<stable-feature-id>/`, and the ticket owning the feature's page depends on the others. Avoid one ticket per file or a ticket that requires understanding the entire product. Add shared-concern tickets only when evidence shows a reusable contract, plus architecture-integration and final-validation tickets. Record actual dependencies; do not impose an arbitrary serial chain. Architecture tickets depend on the enrichment tickets whose source mappings they use; final validation depends on the pages/graphs in scope.
+
+When the user asks for a functional-only atlas, plan wave 1 and the review ticket only. Enrichment tickets can be added later by replanning; the scaffolder appends them without touching existing tickets.
+
+Check every discovered surface is attributed and every planned deliverable has an owner. Each ticket needs a runnable first inspection step and bounded acceptance criteria. If discovery cannot settle a boundary, create an investigation ticket with a question and completion criterion rather than inventing behavior. Existing partial dossiers may seed tickets but are unverified outputs to recheck, not factual evidence.
 
 Create ticket pages and queue rows with the bundled [ticket scaffolder](../scripts/scaffold_tickets.py) rather than writing each ticket by hand. Write a temporary planning file outside `DOCS_ROOT`, for example in a scratch directory:
 
 ```json
 {"version": 1, "source_root": "<SOURCE_ROOT>",
  "snapshot": {"revision": "<full sha>", "dirty": "clean", "inspected": "YYYY-MM-DD"},
- "tickets": [{"id": "RD-001", "type": "feature", "title": "Place an order",
-              "objective": "Document how a customer places an order.", "features": ["orders"],
-              "actor": "Customer submits checkout", "outcome": "Order persisted and confirmation returned",
+ "tickets": [{"id": "RD-001", "type": "functional", "title": "Orders",
+              "objective": "Document what customers can do with orders.", "features": ["orders"],
+              "actor": "Customer", "outcome": "Orders placed, followed and cancelled",
+              "surfaces": [{"kind": "screen", "name": "My orders", "access": "Menu › Orders, /orders"},
+                           {"kind": "screen", "name": "Checkout", "access": "Cart › Checkout, /checkout"}],
               "include": ["..."], "exclude": ["..."],
               "leads": [{"path": "src/orders.py", "note": "`place_order`"}],
               "tests": [{"path": "tests/test_orders.py", "note": "assertions not yet inspected"}],
-              "deps": [{"id": "RD-004", "provides": "order model contract"}],
+              "deps": [],
               "unknowns": ["..."], "first_step": "Read `place_order` in src/orders.py.",
               "acceptance": ["optional extra criteria"], "outputs": ["optional; defaults by type"]}]}
 ```
@@ -31,7 +40,7 @@ python3 "<installed-skill>/scripts/scaffold_tickets.py" "<DOCS_ROOT>" "<plan.jso
 python3 "<installed-skill>/scripts/scaffold_tickets.py" "<DOCS_ROOT>" "<plan.json>"
 ```
 
-The scaffolder validates IDs, types, dependencies and that every lead exists under `SOURCE_ROOT`; it writes nothing when validation fails. It applies the ticket contract template with type-specific acceptance criteria, computes `ready`/`blocked` from dependency status, creates the queue at the saved `ticket_queue` path or appends rows for new tickets, and records ticket status in each ticket's front matter. It never overwrites an existing ticket, so rerunning it after a replan adds only new IDs. Afterwards, edit tickets and the queue directly; the planning file is disposable and is not an authoritative record. Write the index and `coverage.md` as Markdown files directly.
+`surfaces` is optional; each entry needs `kind` and `name`, with `access` describing how the user reaches it. The scaffolder validates IDs, types, surfaces, dependencies and that every lead exists under `SOURCE_ROOT`; it writes nothing when validation fails. It applies the ticket contract template with type-specific acceptance criteria, computes `ready`/`blocked` from dependency status, creates the queue at the saved `ticket_queue` path or appends rows for new tickets, and records ticket status in each ticket's front matter. It never overwrites an existing ticket, so rerunning it after a replan adds only new IDs. Afterwards, edit tickets and the queue directly; the planning file is disposable and is not an authoritative record. Write the index and `coverage.md` as Markdown files directly.
 
 Publish paired Markdown/HTML inventory, coverage and ticket pages by running the [HTML renderer](html-format.md#rendering-with-the-bundled-renderer). Link only existing dossiers. Stop after planning and present the recommended ready ticket with a copyable fresh-session prompt. This is completion of Pass 1, not completion of the atlas. Do not start the first execution ticket in the planning context, even when the eventual request covers the whole project. Save the plan and give the next fresh-session prompt.
 
@@ -51,14 +60,14 @@ Recovery preserves the session boundary: after planning or executing a different
 
 Each ticket contains enough context to execute without the planning conversation:
 
-- Stable ID, title, type (feature/shared/investigation/architecture/check), status (the `status:` front matter line) and owning feature IDs.
+- Stable ID, title, type (functional/review/enrichment/shared/investigation/architecture/check), status (the `status:` front matter line) and owning feature IDs. A `feature` ticket in an older queue covers both waves for its feature in one session.
 - Absolute source root, output root, inspected revision and dirty state (or dated non-Git snapshot), plus index/context paths relative to the output root.
-- Observable documentary objective, actor/trigger/outcome where known, included/excluded scope and exact output files. Keep intended behavior separate from observed behavior.
+- Observable documentary objective, actor/trigger/outcome where known, the feature's interaction surfaces and how they are reached, included/excluded scope and exact output files (functional page, technical page and any extra pages). Keep intended behavior separate from observed behavior.
 - Executable starting points: source-root-relative paths, symbols/registrations and tests with the assertion scope already inspected. These are leads to re-read, not proof carried across sessions. Never use repository prose as evidence.
 - Dependencies by ticket ID and what evidence/deliverable they provide; independent work remains independently ready.
-- Concrete acceptance criteria: relevant behavior/failures/state contracts, participating-file table, copy/refactor limits, source citations, index/coverage updates and HTML parity. Architecture/check tickets use their respective contracts instead of feature-only sections.
-- Known unknowns and a short inspection plan, including the next exact file/symbol to inspect. Record runtime checks separately from documentary checks; application execution is optional unless the user requests it. When the user opts into runtime evidence during planning, add an acceptance criterion such as “Runtime evidence pass requested” to each feature ticket it applies to, so the executing session follows [the runtime evidence pass](runtime-evidence.md) without the planning conversation.
-- Handoff: inspected files/ranges and findings with citations, outputs changed, validations actually run, unresolved paths, remaining work and the next action. Do not dump raw conversation or sensitive values.
+- Concrete acceptance criteria for the ticket's type: functional page sections written from the user's perspective for functional tickets; answered and still-open questions for the review; behavior/failures/state contracts, participating-file table, copy/refactor limits and source citations for enrichment; plus index/coverage updates and HTML parity. Architecture/check tickets use their respective contracts.
+- Known unknowns and a short inspection plan, including the next exact file/symbol to inspect. Record runtime checks separately from documentary checks; application execution is optional unless the user requests it. When the user opts into runtime evidence during planning, add an acceptance criterion such as “Runtime evidence pass requested” to each enrichment ticket it applies to, so the executing session follows [the runtime evidence pass](runtime-evidence.md) without the planning conversation.
+- Handoff: inspected files/ranges and findings with citations, questions asked and their `Q-NNN` IDs, outputs changed, validations actually run, unresolved paths, remaining work and the next action. Do not dump raw conversation or sensitive values.
 - A fresh-session invocation that names this ticket and tells the agent to work from DOCS_ROOT.
 
 Maintain the queue at `ticket_queue` (default `tickets/index.md`) with ID, objective, status, dependencies and links; preserve that path during recovery and updates. Ticket states are `ready`, `in_progress`, `blocked`, `done`, `unresolved`; these are distinct from feature statuses. A ticket is ready only when its required dependencies are satisfied. Blocked means a named missing prerequisite prevents progress; unresolved means a bounded investigation concluded with an explicit evidence gap accepted by the relevant scope. Neither state silently counts as verified behavior. A ticket is done only after its acceptance criteria and documentary validation are satisfied.
@@ -77,13 +86,15 @@ A ticket selected explicitly or through workspace recovery supplies its source/o
 
 Read the selected ticket, queue dependencies, applicable documentation contract and only the relevant bundled feature/architecture/check workflow. Compare HEAD and local changes with the ticket snapshot; re-read executable evidence before accepting claims. If drift changes scope or prerequisites, update the ticket/coverage and investigate affected boundaries before continuing. Prior-session prose and hashes do not establish current correctness.
 
-Mark the ticket in_progress, complete its bounded vertical trace and outputs, and validate that slice in Markdown and HTML. Update the atlas, source mappings, coverage and ticket handoff. Mark done only when its acceptance criteria hold; otherwise record the specific remaining gap and accurate status. Do not implement application changes.
+Mark the ticket in_progress, complete its bounded work as defined by its type and outputs, and validate that slice in Markdown and HTML. Update the atlas, source mappings, coverage and ticket handoff. Mark done only when its acceptance criteria hold; otherwise record the specific remaining gap and accurate status. Do not implement application changes.
 
 End the session after the selected ticket with its status, outputs, checks, unresolved work and the next ready ticket's fresh-session prompt. Stop after that handoff. A request covering several tickets or the whole project still requires a separate fresh context for each ticket; it does not authorize a same-conversation loop. If the ticket remains unfinished, the next prompt resumes that same ticket. Splitting work into tickets does not itself authorize delegation.
 
+Feature tickets follow [retrodoc-feature](workflows/retrodoc-feature.md) for their wave. The review ticket reads the index, `surfaces.md`, `questions.md` and each functional page's summary and open questions, not the source. It updates the index into a functional overview of the application ordered along its navigation, asks every open question in one batch of numbered questions grouped by feature, records the answers in `questions.md`, updates the affected functional pages, and leaves unanswered questions open for wave 2.
+
 ## Pass 3: integrate and verify
 
-Execute each architecture/integration ticket in its own fresh context to reconcile typed dependencies, diagrams, shared concepts, glossary and reverse source index across completed feature mappings. Then execute the final validation ticket in another fresh context: rescan registrations for coverage changes, check source freshness, reconcile unresolved items and validate both reading editions. Avoid claiming the full project is documented while tickets remain incomplete. Report done/unresolved/blocked counts and the exact remaining scope.
+Execute each architecture/integration ticket in its own fresh context to reconcile typed dependencies, diagrams, shared concepts, glossary and reverse source index across completed feature mappings. Then execute the final validation ticket in another fresh context: rescan routes, menus, endpoints and commands against `surfaces.md` for coverage changes, check source freshness, reconcile unresolved items and validate both reading editions. Avoid claiming the full project is documented while tickets remain incomplete. Report done/unresolved/blocked counts and the exact remaining scope.
 
 ## Fresh-session prompt
 

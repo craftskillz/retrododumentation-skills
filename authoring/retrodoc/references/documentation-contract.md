@@ -22,25 +22,29 @@ On relocation, resolve the recorded/captured root mismatch with the user, valida
 
 Documenting a repository is not developing it. Apply source-project instructions only where they govern the actual documentary work, such as access boundaries, confidentiality and handling source artifacts. Do not automatically activate build/lint/test gates, dependency installation, development setup, ticket/worklog updates, commits, ADR creation or publication routines intended for changing the source project. Their presence alone is not a reason to pause documentation or request an exception. Output-workspace instructions still apply to artifacts written there; higher-priority instructions and explicit user requests remain controlling.
 
-Inspect executable tests as evidence without requiring their execution. Run source checks only when requested or materially useful to resolve a documentary uncertainty, within authorized access and without changing the source. Running the application itself (screenshots, browser-driven scenarios, an acceptance spec) requires the user's opt-in and follows [the runtime evidence pass](runtime-evidence.md). If execution is unavailable or skipped, record that limit and continue source-based documentation. Validate the generated documentation's evidence, links, coverage, graphs and reading edition independently of source-project development gates.
+Inspect executable tests as evidence without requiring their execution. Run source checks only when requested or materially useful to resolve a documentary uncertainty, within authorized access and without changing the source. Running the application itself (screenshots, browser-driven scenarios, an acceptance spec) requires the user's opt-in and follows [the runtime evidence pass](runtime-evidence.md). The only other use of a running application is the last-resort discovery crawl in [surface-first discovery](surface-discovery.md), against an instance the user starts. If execution is unavailable or skipped, record that limit and continue source-based documentation. Validate the generated documentation's evidence, links, coverage, graphs and reading edition independently of source-project development gates.
 
-## Language and exclusive evidence policy
+## Language and evidence policy
 
 Write skill instructions and all generated documentation in English, including headings, explanations, diagram labels, graph notes and check reports. Preserve exact source identifiers, paths, configuration keys and literal values; explain their meaning in English rather than renaming them.
 
-Executable artifacts are the exclusive source of truth for project facts. This includes implementation and executable tests, plus machine-consumed build, deployment and runtime definitions: `justfile`, `Makefile`, `Dockerfile`, Compose files, `package.json` scripts/dependencies, lockfiles, CI workflows, migrations, schemas, templates, stylesheets, UI components, user-facing message catalogs and configuration actually consumed by tooling or the application. Establish how an artifact participates; its filename alone is not proof. A manifest description is prose, whereas its dependency declarations and scripts define tooling behavior.
+Executable artifacts are the definitive source of truth for project facts. This includes implementation and executable tests, plus machine-consumed build, deployment and runtime definitions: `justfile`, `Makefile`, `Dockerfile`, Compose files, `package.json` scripts/dependencies, lockfiles, CI workflows, migrations, schemas, templates, stylesheets, UI components, user-facing message catalogs and configuration actually consumed by tooling or the application. Establish how an artifact participates; its filename alone is not proof. A manifest description is prose, whereas its dependency declarations and scripts define tooling behavior.
+
+Answers the user gives to targeted questions are strong evidence, labeled `User-stated`. They can settle what executable artifacts cannot: feature boundaries and names, business meaning, intent, and whether an observed behavior is deliberate or a defect. When a user statement contradicts executable evidence, the source code wins: document the implemented behavior as current, keep the statement beside it as an unresolved discrepancy, and list it under known defects when the user describes the implemented behavior as wrong. Record every question and answer in `questions.md` so later sessions can cite it.
 
 Executable tests are strong documentary evidence. Inspect their setup, inputs, assertions, fixtures, mocks and skips to establish exactly which behavior they specify. An assertion is evidence of an expected contract; a passing execution additionally verifies the exercised cases in the recorded environment. Mocked integrations, disabled/skipped tests and unexecuted tests have explicit limits. Test names, descriptions and comments alone do not establish behavior.
 
-Do not derive project facts, feature boundaries, business meanings, dependencies or design rationale from README files, ADRs, specifications, glossaries, other documentation, code comments or descriptive docstrings. Do not use them to fill gaps in executable evidence. Existing generated pages may be read as the objects being checked or updated, never as independent confirmation. Apply relevant agent/workspace instructions within documentary scope, not as evidence of project behavior.
+Apart from `User-stated` answers, do not derive project facts, feature boundaries, business meanings, dependencies or design rationale from README files, ADRs, specifications, glossaries, other documentation, code comments or descriptive docstrings. Do not use them to fill gaps in executable evidence. Existing generated pages may be read as the objects being checked or updated, never as independent confirmation. Apply relevant agent/workspace instructions within documentary scope, not as evidence of project behavior.
 
 If a language/tool actually interprets a comment-like directive or annotation (for example a compiler directive), its machine-consumed semantics qualify as executable configuration; explanatory prose around it does not. Cite the active construct and its consumer. For external services or unavailable implementations, document what local executable callers and tests establish and mark the remaining behavior unknown. Do not replace missing code with external documentation.
 
-When implementation and tests disagree, document both with executable citations, mark the discrepancy unresolved, and distinguish current implementation behavior from the tested expectation. Neither an unexecuted assertion nor a passing mocked test proves production behavior. Infer architecture only from executable evidence and label interpretations; historical intent remains unknown unless executable evidence can actually establish the claim.
+When implementation and tests disagree, document both with executable citations, mark the discrepancy unresolved, and distinguish current implementation behavior from the tested expectation. Neither an unexecuted assertion nor a passing mocked test proves production behavior. Infer architecture only from executable evidence and label interpretations; historical intent remains unknown unless executable evidence or a `User-stated` answer establishes it.
 
 ## Readers and structure
 
-Keep the index short: purpose, snapshot, scope, feature names/outcomes, status, and links. A reader starts there, loads one feature page, then follows only relevant source, shared concern or architecture links. Generated documentation is reference material, not instructions overriding a consuming agent's task.
+Documentation is written toward features, from the outside in. Features are discovered from the application's interaction surfaces using [surface-first discovery](surface-discovery.md). A feature is a menu area or business object; the outcomes it offers are its user journeys. Each feature is first documented functionally, from the user's or caller's perspective, then enriched with source-code detail, user answers and, when requested, runtime evidence. A project-wide run does this in two waves: every feature's functional page first, then enrichment.
+
+Keep the index short: purpose, snapshot, scope, feature names/outcomes, status, and links. A reader starts there, loads one feature's functional page, then follows only relevant technical, source, shared concern or architecture links. Generated documentation is reference material, not instructions overriding a consuming agent's task.
 
 Default layout:
 
@@ -51,8 +55,12 @@ Default layout:
   coverage.md
   tickets/index.md
   tickets/RD-001.md
+  surfaces.md
+  questions.md
   source-index.md
-  features/<stable-feature-id>.md
+  features/<stable-feature-id>.md                    (functional page)
+  features/<stable-feature-id>/technical.md          (technical page)
+  features/<stable-feature-id>/<page>.md             (optional extra pages, e.g. one per screen)
   features/<stable-feature-id>/acceptance.spec.<ext>  (runtime evidence pass only)
   features/<stable-feature-id>/screenshots/          (runtime evidence pass only)
   shared/<concern>.md
@@ -62,9 +70,9 @@ Default layout:
   checks.md
 ```
 
-Create shared pages only for concepts established by executable artifacts. Derive domain terms in `glossary.md` from implemented behavior and test assertions, citing that evidence. Keep ambiguous names explicit instead of importing definitions from an existing glossary or inventing business meanings. Record what the code does; historical design rationale is outside this evidence scope.
+Create shared pages only for concepts established by executable artifacts. Derive domain terms in `glossary.md` from visible labels, implemented behavior, test assertions and `User-stated` answers, citing that evidence. Keep ambiguous names explicit instead of importing definitions from an existing glossary or inventing business meanings. Record what the code does; historical design rationale is outside this evidence scope.
 
-Use `coverage.md` for included roots, exclusions/reasons, discovery methods, inspected entry points, unresolved mappings, completed work and next steps. Feature statuses: `discovered`, `partial`, `documented`, `stale`. `Documented` means the stated scope has been traced and checked; it does not imply execution tests passed. Each page records its own inspected snapshot/date. Partial updates leave untouched page snapshots intact.
+Use `surfaces.md` for the interaction-surface inventory defined in surface-first discovery, and `questions.md` for every question raised for the user: its ID (`Q-NNN`), affected features, status (`open` or `answered`), and for answered ones the date, the answer and whether source code confirmed or contradicted it. The user may also answer open questions by editing `questions.md` between sessions; treat such answers as `User-stated`. Use `coverage.md` for included roots, exclusions/reasons, discovery methods, inspected surfaces and registration mechanisms, unresolved mappings, completed work and next steps. Feature statuses: `discovered`, `functional`, `partial`, `documented`, `stale`. `Functional` means the functional page is written (wave 1) and enrichment is pending. `Documented` means both pages cover the stated scope, traced and checked; it does not imply execution tests passed. Each page records its own inspected snapshot/date. Partial updates leave untouched page snapshots intact.
 
 ## Evidence and freshness
 
@@ -75,6 +83,7 @@ Distinguish:
 - **Observed in source:** directly supported by inspected implementation/configuration.
 - **Test expectation:** strong contract evidence from inspected executable assertions and setup; cite the test and distinguish executed, unexecuted, skipped and mocked coverage.
 - **Executed:** command, environment and actual result observed during this run; application runs follow [the runtime evidence pass](runtime-evidence.md).
+- **User-stated:** an answer recorded in `questions.md`; cite its `Q-NNN` ID. Source code overrides it on contradiction.
 - **Inferred:** interpretation, supporting evidence and what would confirm it.
 - **Unknown:** missing evidence and its effect on copying, behavior or analysis.
 
@@ -82,32 +91,46 @@ Document current behavior, including apparent defects. Put proposed behavior and
 
 ## Feature page contract
 
-Each feature page contains these sections, sized to the feature. State “not applicable” with a reason for irrelevant dimensions, and “unknown” for missing evidence.
+Each feature has a functional page and a technical page. Add as many extra pages under `features/<stable-feature-id>/` as the feature needs to stay readable, for example one page per screen when a feature has many screens, linked from the functional page. Size sections to the feature. State “not applicable” with a reason for irrelevant dimensions, and “unknown” for missing evidence.
 
-1. **Purpose and boundaries:** stable ID, actor, trigger, outcome, included/excluded behavior, related features, inspected snapshot and status.
-2. **Behavior:** normal flow, meaningful failure/edge cases, permissions, validation, state changes and side effects. Concrete input/output scenarios supported by source/tests.
-3. **Implementation flow:** entry point → decisions → state/integrations → response/event. A small sequence/flow diagram when useful. Label runtime flows separately from import graphs.
-4. **Contracts and dependencies:** public interfaces, data formats, storage/schema and migrations, errors, configuration/flags, external services and relevant ordering, transaction, retry, idempotency or concurrency rules.
-5. **Participating source files:** a table of linked `SOURCE_ROOT`-relative path, symbols, responsibility, participation role (entry point/core/shared/adapter/schema/config/test), and evidence of participation. Include templates, migrations, assets and registration files. Mark shared files and relevant symbols when a file mixes features. Vendor packages are external prerequisites, not thousands of source rows.
-6. **Copying this feature:** behavior to preserve, smallest evidenced source/resource set, transitive local dependencies, shared symbols to retain/adapt, integration/registration points, runtime prerequisites, data assumptions and migrations, portability blockers, and verification scenarios. This is a transfer brief, not a guarantee that copying files works. Distinguish whole-file copying from extracting symbols from a shared file. Record unresolved closure instead of calling it self-contained. Write it so an agent without source access could rebuild the feature on another stack:
+### Functional page: `features/<stable-feature-id>.md`
+
+Written from the user's or caller's perspective, so it can serve as a specification for rebuilding the feature on any stack. Use the user's vocabulary from visible labels. Keep implementation terms (classes, modules, frameworks, tables) out of the prose; cite evidence with compact labels and links instead.
+
+1. **Summary:** stable ID, name, who uses it, the outcomes it offers, included/excluded behavior, related features, inspected snapshot and status.
+2. **Access:** how the user or caller reaches it: menu path, route or URL, endpoint, command; required roles and permissions.
+3. **Interface:** for each screen, its purpose, regions, displayed data, actions, forms with fields and validation, and empty, loading, error and dialog states. For an API, each operation's request, response and errors from the caller's view. For a CLI, commands, options, output and exit codes. Link screenshots when a runtime pass produced them.
+4. **User journeys:** one per outcome the feature offers, as step-by-step scenarios for the normal path, alternatives and failures, with concrete inputs and visible outcomes.
+5. **Business rules:** the rules the user experiences (validation, calculations, limits, permissions, state changes and side effects they notice), each with its evidence label.
+6. **Messages:** user-facing strings verbatim in the primary locale, with their keys.
+7. **Open functional questions:** unknowns, user-stated claims the source contradicts, and questions still to ask.
+
+### Technical page: `features/<stable-feature-id>/technical.md`
+
+1. **Implementation flow:** entry point → decisions → state/integrations → response/event. A small sequence/flow diagram when useful. Label runtime flows separately from import graphs.
+2. **Contracts and dependencies:** public interfaces, data formats, storage/schema and migrations, errors, configuration/flags, external services and relevant ordering, transaction, retry, idempotency or concurrency rules.
+3. **Participating source files:** a table of linked `SOURCE_ROOT`-relative path, symbols, responsibility, participation role (entry point/core/shared/adapter/schema/config/test), and evidence of participation. Include templates, migrations, assets and registration files. Mark shared files and relevant symbols when a file mixes features. Vendor packages are external prerequisites, not thousands of source rows.
+4. **Copying this feature:** behavior to preserve (pointing to the functional page's journeys and rules), smallest evidenced source/resource set, transitive local dependencies, shared symbols to retain/adapt, integration/registration points, runtime prerequisites, data assumptions and migrations, portability blockers, and verification scenarios. This is a transfer brief, not a guarantee that copying files works. Distinguish whole-file copying from extracting symbols from a shared file. Record unresolved closure instead of calling it self-contained. Write it so an agent without source access could rebuild the feature on another stack:
    - **Known defects: decide, don't replicate.** List apparent defects and risks (silent failures, data-loss paths, missing validation, races) separately from the behavior to preserve, each with its evidence label, so a copy does not reproduce them by accident. Documenting them is not a recommendation to fix them.
-   - **Rebuild specification** for features with a user interface: a UI inventory (screens, regions, components, forms with their fields and validation, interactions, and empty, loading, error and dialog states); the presentation values the feature actually applies, resolved to literal values (layout and breakpoints, colors per theme, typography, spacing that defines the look), including values inherited from shared stylesheets or marked untraced; and the user-facing strings verbatim in the primary locale with their keys. Link screenshots and the acceptance spec when a runtime evidence pass produced them. State “not applicable” for features without a user interface.
-7. **Refactoring this feature:** observable invariants, inbound consumers, affected features/shared state, tests and gaps, plausible seams with tradeoffs, links to architecture findings. Proposed seams remain proposals.
-8. **Evidence and open questions:** test locations and assertion scope, commands actually run/results or “not run”, runtime evidence pass results (scenarios run/passed/failed/not run, re-run command) or “not run”, conflicting evidence, missing pieces and consequences.
+   - **Presentation values** for features with a user interface: the values the feature actually applies, resolved to literal values (layout and breakpoints, colors per theme, typography, spacing that defines the look), including values inherited from shared stylesheets or marked untraced. Together with the functional page's interface and messages sections, this forms the rebuild specification. State “not applicable” for features without a user interface.
+5. **Refactoring this feature:** observable invariants, inbound consumers, affected features/shared state, tests and gaps, plausible seams with tradeoffs, links to architecture findings. Proposed seams remain proposals.
+6. **Evidence and open questions:** test locations and assertion scope, commands actually run/results or “not run”, runtime evidence pass results (scenarios run/passed/failed/not run, re-run command) or “not run”, `User-stated` answers used (by `Q-NNN`), conflicting evidence, missing pieces and consequences.
 
-The source table is the authoritative feature-to-file mapping. Derive `source-index.md` from all feature tables: each path links back to its features and records its roles. A file can legitimately appear in several features. The reverse index supports impact discovery; it is not a dependency graph.
+The technical page's source table is the authoritative feature-to-file mapping. Derive `source-index.md` from all feature source tables: each path links back to its features and records its roles. A file can legitimately appear in several features. The reverse index supports impact discovery; it is not a dependency graph.
+
+An atlas written with the earlier single-page layout is migrated on refresh: keep `features/<stable-feature-id>.md` as the functional page and move implementation, source, copying, refactoring and evidence sections to `technical.md`.
 
 ## Durable tickets and session boundaries
 
-Project-wide documentation uses [the ticket workflow](ticket-workflow.md): discovery/planning first, bounded ticket execution in fresh sessions, then integration and final checks. Planning has its own context, and each ticket executes in a separate fresh context. A whole-project request preserves the eventual scope without merging ticket sessions. Do not continue from planning into ticket execution or from one ticket to another in the same conversation. A planning pass does not create feature placeholders or mark features documented. Ticket handoffs capture source leads and remaining work; each execution session must verify those leads against current executable artifacts. Keep ticket status separate from feature status.
+Project-wide documentation uses [the ticket workflow](ticket-workflow.md): discovery/planning first, bounded ticket execution in fresh sessions, then integration and final checks. Planning has its own context, and each ticket executes in a separate fresh context. A whole-project request preserves the eventual scope without merging ticket sessions. Do not continue from planning into ticket execution or from one ticket to another in the same conversation. A planning pass does not create feature placeholders or mark features documented. Planning orders the queue in two waves: functional tickets and a functional review first, enrichment tickets second. Ticket handoffs capture source leads and remaining work; each execution session must verify those leads against current executable artifacts. Keep ticket status separate from feature status.
 
 ## Update discipline
 
-Re-read relevant source before acting on an old page. Compare recorded snapshots with tracked, untracked and local changes where available. Recheck changed files' owning features, inbound consumers, schemas, configuration, tests and graph edges. Rescan registrations for added/removed features. Keep stable IDs unless meaning changes; retain an old-to-new mapping on renames/splits. Preserve unrelated documents. Within the requested documentation scope, revalidate existing explanations against executable evidence; correct or explicitly mark unsupported claims rather than carrying them forward as facts. Report removed behavior and its evidence.
+Re-read relevant source before acting on an old page. Compare recorded snapshots with tracked, untracked and local changes where available. Recheck changed files' owning features, inbound consumers, schemas, configuration, tests and graph edges. Rescan surfaces (routes, menus, endpoints, commands) for added or removed screens and features, and update `surfaces.md`. Keep stable IDs unless meaning changes; retain an old-to-new mapping on renames/splits. Preserve unrelated documents. Within the requested documentation scope, revalidate existing explanations against executable evidence; correct or explicitly mark unsupported claims rather than carrying them forward as facts. Report removed behavior and its evidence.
 
 ## Quality bar
 
-A human can understand the outcome and navigate to its implementation. An LLM can find contracts, source slices, integration requirements, invariants and unknowns without loading every feature. Links resolve, source roles have evidence, and diagrams match their declared relation types. Coverage and uncertainty are visible; a polished page never substitutes for traced behavior.
+A reader who does not know the code, such as a product owner, understands what each feature lets users do from its functional page alone. A developer can navigate from there to the implementation. An LLM can find contracts, source slices, integration requirements, invariants and unknowns without loading every feature. Links resolve, source roles have evidence, and diagrams match their declared relation types. Coverage and uncertainty are visible; a polished page never substitutes for traced behavior.
 
 ## Authoring and tooling
 

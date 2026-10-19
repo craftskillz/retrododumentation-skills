@@ -1,6 +1,6 @@
 # Retrodoc HTML publication contract
 
-Read when producing or checking browser-readable Retrodoc documentation. Markdown remains the canonical editorial source; HTML is a generated, equally complete reading edition. This contract specifies presentation, not new evidence or permission to publish. Preserve the documentation contract's English language, root separation, executable-evidence rules and scope.
+Read when producing or checking browser-readable Retrodoc documentation. Markdown remains the canonical editorial source; HTML is a generated, equally complete reading edition. This contract specifies presentation, not new evidence or permission to publish. Preserve the documentation contract's English language, root separation, evidence rules and scope.
 
 ## Output and synchronization
 
@@ -45,7 +45,7 @@ Use semantic HTML (`header`, labeled `nav`, `main`, `article`, `section`, `foote
 5. Substantive sections and diagrams, followed by evidence and open questions. Core content remains visible without JavaScript. Use native `details` only for ancillary logs and long evidence excerpts, with informative summaries.
 6. Links to the Markdown source, the atlas, and genuinely related existing pages.
 
-The index is a compact atlas: feature/outcome/status table or cards, coverage and architecture links, and an explicit unresolved section. Feature dossiers preserve all eight Markdown contract sections; do not compress away copy prerequisites or error contracts for appearance. Architecture findings use a card per finding with evidence, confidence, impact, counterevidence, proposed separation and verification. Check reports separate structural, semantic and execution results; passing link checks never mean behavior was verified.
+The index is a compact atlas: feature/outcome/status table or cards ordered along the application's navigation, coverage and architecture links, and an explicit unresolved section. Feature functional and technical pages preserve all their Markdown contract sections; do not compress away copy prerequisites or error contracts for appearance. Architecture findings use a card per finding with evidence, confidence, impact, counterevidence, proposed separation and verification. Check reports separate structural, semantic and execution results; passing link checks never mean behavior was verified.
 
 ## Visual system
 

@@ -8,7 +8,8 @@ import re
 import sys
 from urllib.parse import quote
 
-TYPES = {'feature', 'shared', 'investigation', 'architecture', 'check'}
+TYPES = {'functional', 'review', 'enrichment', 'feature', 'shared', 'investigation', 'architecture', 'check'}
+FEATURE_TYPES = ('functional', 'enrichment', 'feature')
 STATUS = re.compile(r'^status:\s*(\S+)', re.M)
 ID = re.compile(r'^RD-\d{3,}$')
 
@@ -28,6 +29,14 @@ def entries(value, field, ident):
     for entry in value:
         require(isinstance(entry, dict) and isinstance(entry.get('path'), str) and entry['path'].strip(),
                 f'{ident}: each {field} entry needs a path')
+    return value
+
+
+def surfaces(value, ident):
+    require(isinstance(value, list), f'{ident}: surfaces must be a list')
+    for entry in value:
+        require(isinstance(entry, dict) and all(isinstance(entry.get(k), str) and entry[k].strip() for k in ('kind', 'name')),
+                f'{ident}: each surface needs a kind and a name')
     return value
 
 
@@ -59,8 +68,9 @@ def load_plan(path, docs_root):
             t[key] = strings(t.get(key, []), key, ident)
         for key in ('leads', 'tests'):
             t[key] = entries(t.get(key, []), key, ident)
-        require(t['type'] not in ('feature', 'shared') or t['features'], f'{ident}: {t["type"]} tickets need features')
-        require(t['type'] not in ('feature', 'shared', 'investigation') or t['leads'], f'{ident}: needs executable leads')
+        t['surfaces'] = surfaces(t.get('surfaces', []), ident)
+        require(t['type'] not in FEATURE_TYPES + ('shared',) or t['features'], f'{ident}: {t["type"]} tickets need features')
+        require(t['type'] not in FEATURE_TYPES + ('shared', 'investigation') or t['leads'], f'{ident}: needs executable leads')
         deps = t.get('deps', [])
         require(isinstance(deps, list) and all(isinstance(d, dict) and isinstance(d.get('id'), str) for d in deps),
                 f'{ident}: deps must be a list of {{"id", "provides"}} objects')
@@ -78,9 +88,21 @@ def source_link(source, rel, page_dir):
 
 
 def default_outputs(t):
-    kinds = {'feature': 'features', 'shared': 'shared'}
-    if t['type'] in kinds:
-        outputs = [f'`{kinds[t["type"]]}/{f}.md`' for f in t['features']]
+    functional = [f'`features/{f}.md` (functional page)' for f in t['features']]
+    technical = [f'`features/{f}/technical.md` (technical page)' for f in t['features']]
+    if t['type'] == 'functional':
+        outputs = functional + ['Screen pages under `features/<id>/` when the feature needs them',
+                                'Updates to `surfaces.md` and open entries in `questions.md`']
+    elif t['type'] == 'review':
+        outputs = ['The index as a functional overview ordered along the application\'s navigation',
+                   'Answers recorded in `questions.md`', 'Updates to the functional pages affected by the answers']
+    elif t['type'] == 'enrichment':
+        outputs = technical + [f'Updates to `features/{f}.md` from source and answers' for f in t['features']]
+        outputs += ['Updates to `surfaces.md`, `questions.md` and `source-index.md`']
+    elif t['type'] == 'feature':
+        outputs = functional + technical + ['Updates to `surfaces.md`, `questions.md` and `source-index.md`']
+    elif t['type'] == 'shared':
+        outputs = [f'`shared/{f}.md`' for f in t['features']]
     elif t['type'] == 'investigation':
         outputs = ['Findings in `coverage.md` and this ticket\'s handoff']
     elif t['type'] == 'architecture':
@@ -93,12 +115,27 @@ def default_outputs(t):
 
 
 def default_acceptance(t):
-    if t['type'] == 'feature':
-        items = [f'`features/{f}.md` contains all eight feature page contract sections.' for f in t['features']]
-        items += ['Normal flow, meaningful failures, validation, state changes and side effects cite implementation or test assertions with evidence labels.',
-                  'The participating-file table lists every traced file with symbols, role and evidence; shared files are marked.',
-                  'Copying and refactoring sections state transitive local dependencies, registration points and unresolved closure.',
-                  'Test assertion scope is described per test file; tests are reported as run with results or "not run".']
+    functional = [f'`features/{f}.md` contains every functional page section, written from the user\'s perspective without implementation terms in its prose.'
+                  for f in t['features']]
+    functional += ['Every surface listed in this ticket is covered by the functional page or explicitly excluded.',
+                   'There is one user journey per outcome the feature offers, with visible results and failures.']
+    enrichment = [f'`features/{f}/technical.md` contains every technical page section.' for f in t['features']]
+    enrichment += ['Business rules hidden in the code are added to the functional page; contradictions with user answers are kept as discrepancies.',
+                   'Normal flow, meaningful failures, validation, state changes and side effects cite implementation or test assertions with evidence labels.',
+                   'The participating-file table lists every traced file with symbols, role and evidence; shared files are marked.',
+                   'Copying and refactoring sections state transitive local dependencies, registration points and unresolved closure.',
+                   'Test assertion scope is described per test file; tests are reported as run with results or "not run".',
+                   'Questions asked to the user are recorded in `questions.md`.']
+    if t['type'] == 'functional':
+        items = functional + ['Open questions are recorded on the page and as `open` entries in `questions.md`, not asked.']
+    elif t['type'] == 'review':
+        items = ['Every open question in `questions.md` was presented in one batch, grouped by feature.',
+                 'Answers are recorded with their date; unanswered questions stay `open` for wave 2.',
+                 'Functional pages affected by the answers are updated; the index gives a functional overview of the application.']
+    elif t['type'] == 'enrichment':
+        items = enrichment
+    elif t['type'] == 'feature':
+        items = functional + enrichment
     elif t['type'] == 'shared':
         items = [f'`shared/{f}.md` documents the reusable contract, its cited consumers and invariants.' for f in t['features']]
         items += ['Listed consumers match an actual import/call search.']
@@ -109,7 +146,7 @@ def default_acceptance(t):
                  'Findings carry evidence, confidence, impact and counterevidence; unfinished feature tickets are listed as limits.']
     else:
         items = ['`checks.md` separates structural, semantic and execution results.',
-                 'A registration rescan is compared with `coverage.md`; done/unresolved/blocked counts are reported.']
+                 'A surface rescan is compared with `surfaces.md` and `coverage.md`; done/unresolved/blocked counts are reported.']
     return items + ['Source links resolve from each page\'s directory to SOURCE_ROOT.',
                     '`render_html.py --check` reports no problems for the changed pages.']
 
@@ -140,16 +177,22 @@ def ticket_page(t, status, plan, source, docs_root, queue):
     if t['exclude']:
         lines += ['**Excluded:**', ''] + [f'- {x}' for x in t['exclude']] + ['']
     lines += ['Outcomes were located during planning and are not yet verified behavior.', '',
-              '## Output files', ''] + [f'- {x}' for x in t['outputs'] or default_outputs(t)] + ['', '## Executable starting points', '']
+              '## Output files', ''] + [f'- {x}' for x in t['outputs'] or default_outputs(t)] + ['']
+    if t['surfaces']:
+        lines += ['## Interaction surfaces', '', '| Kind | Name | Access |', '|---|---|---|']
+        cell = lambda v: str(v).replace('|', '\\|')
+        lines += [f'| {cell(x["kind"])} | {cell(x["name"])} | {cell(x.get("access") or "—")} |' for x in t['surfaces']] + ['']
+    lines += ['## Executable starting points', '']
     if t['leads']:
         lines += ['| Source | Lead |', '|---|---|'] + [f'| {source_link(source, x["path"], page_dir)} | {x.get("note") or "—"} |' for x in t['leads']]
     else:
-        lines.append('- Completed dossiers, `coverage.md` and the workflow for this ticket type.')
+        lines.append('- The functional pages, `surfaces.md` and `questions.md`.' if t['type'] == 'review' else
+                     '- Completed dossiers, `coverage.md` and the workflow for this ticket type.')
     lines.append('')
     if t['tests']:
         lines += ['**Tests located (assertion scope as noted):**', '', '| Test | Note |', '|---|---|']
         lines += [f'| {source_link(source, x["path"], page_dir)} | {x.get("note") or "assertions not yet inspected"} |' for x in t['tests']] + ['']
-    elif t['type'] in ('feature', 'shared'):
+    elif t['type'] in FEATURE_TYPES + ('shared',):
         lines += ['**Tests located:** none during planning; search again before concluding there is no coverage.', '']
     lines += ['## Dependencies', '']
     if t['deps']:
@@ -159,13 +202,27 @@ def ticket_page(t, status, plan, source, docs_root, queue):
         lines.append('- None. Independently ready.')
     lines += ['', '## Acceptance criteria', ''] + [f'- {x}' for x in default_acceptance(t) + t['acceptance']]
     lines += ['', '## Known unknowns and inspection plan', ''] + [f'- {x}' for x in t['unknowns'] or ['None recorded at planning time.']]
-    lines += ['', '**Inspection plan:**', '', f'1. {t["first_step"]}',
-              '2. Trace one vertical path end to end before widening.',
-              '3. Read the listed tests\' setup and assertions; record mocks and skips.',
-              '4. Write the Markdown outputs, run the bundled HTML renderer, then validate links, citations and parity.', '',
+    plan_steps = [t['first_step']]
+    if t['type'] in ('functional', 'feature'):
+        plan_steps += ['Read the surfaces\' outward-facing layer (screens, forms, messages, routes, API shapes) and write the functional page.']
+    if t['type'] == 'functional':
+        plan_steps.append('Record open questions in `questions.md` without asking them; the review ticket asks them.')
+    elif t['type'] == 'review':
+        plan_steps += ['Read the index, `surfaces.md`, `questions.md` and each functional page\'s summary and open questions.',
+                       'Ask every open question in one batch, record the answers and update the affected functional pages.']
+    if t['type'] in ('enrichment', 'feature'):
+        plan_steps += ['Read the functional page and the answers in `questions.md`.',
+                       'Trace the implementation end to end, correct the functional page and write the technical page.',
+                       'Ask the user one batch of the questions still open; record them in `questions.md`.']
+    elif t['type'] not in ('functional', 'review'):
+        plan_steps.append('Trace one vertical path end to end before widening.')
+    if t['type'] != 'review':
+        plan_steps.append('Read the listed tests\' setup and assertions; record mocks and skips.')
+    plan_steps.append('Write the Markdown outputs, run the bundled HTML renderer, then validate links, citations and parity.')
+    lines += ['', '**Inspection plan:**', ''] + [f'{n}. {x}' for n, x in enumerate(plan_steps, 1)] + ['',
               'Runtime checks are optional; if skipped, record "not run". Do not modify the source project.', '',
               '## Handoff', '',
-              f'- **{snap["inspected"]} — Pass 1 planning:** ticket created from registration scans; no behavior traced and no outputs exist yet.',
+              f'- **{snap["inspected"]} — Pass 1 planning:** ticket created from surface discovery and registration scans; no behavior traced and no outputs exist yet.',
               '- **Next action:** step 1 of the inspection plan.', '',
               '## Fresh-session prompt', '', '```text',
               f'Work from {docs_root}. Use $retrodoc to execute only {queue.parent.relative_to(docs_root).as_posix()}/{t["id"]}.md.',

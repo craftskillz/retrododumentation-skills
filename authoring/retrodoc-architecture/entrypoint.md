@@ -5,7 +5,7 @@ description: Analyze source dependencies around documented features, draw diagra
 
 # Analyze feature architecture
 
-Read [the documentation contract](../retrodoc/references/documentation-contract.md) and [graph rules](references/graph.md). If feature pages are absent, discover a minimal feature/source mapping for the requested scope first and mark it provisional.
+Read [the documentation contract](../retrodoc/references/documentation-contract.md) and [graph rules](references/graph.md). The feature-to-file mapping lives in the technical feature pages. If they are absent, derive a minimal mapping for the requested scope from `surfaces.md` and the source, and mark it provisional.
 
 
 When invoked for a Retrodoc ticket, inherit its selected scope and validated roots, follow [the ticket execution and handoff rules](../retrodoc/references/ticket-workflow.md), use a fresh conversation for that ticket, and stop after its handoff. Additional tickets require additional fresh contexts. A ticket is not evidence: re-read its executable source leads before accepting claims.
@@ -14,7 +14,7 @@ Before discovery, follow the contract's source/output root procedure: capture th
 
 ## Gather evidence
 
-Apply the contract's English-language and exclusive executable-evidence policy. Revalidate existing feature mappings against code and executable tests. Documentation, ADRs, comments and descriptive docstrings cannot establish an edge, responsibility or rationale.
+Apply the contract's English-language and evidence policy. Revalidate existing feature mappings against code and executable tests. Documentation, ADRs, comments and descriptive docstrings cannot establish an edge, responsibility or rationale.
 
 Inspect imports, calls, framework registrations, dependency injection, event wiring and data access. Prefer installed language-aware analysis tools; record command/version, roots and resolution limits. Otherwise inspect source and build the same evidence format manually. Text search provides candidates, not resolved edges. No universal parser is assumed.
 
@@ -38,7 +38,7 @@ For possible god objects/modules, read high-participation or high-degree candida
 
 Write `architecture/findings.md` with scope, snapshot, limits, linked diagrams, and findings containing evidence, confidence, impact, counterevidence, proposed separation and behavior-preserving verification. Label proposals distinctly from current architecture. Include “no evidenced findings in the inspected scope” when appropriate.
 
-Keep feature-to-file participation separate from directed dependency views. Feature-level aggregation may introduce apparent cycles absent at file level; label projections and inspect underlying paths. Link findings from affected feature pages and the atlas index. Suggest changes without executing a refactor.
+Keep feature-to-file participation separate from directed dependency views. Feature-level aggregation may introduce apparent cycles absent at file level; label projections and inspect underlying paths. Link findings from affected technical feature pages and the atlas index. Suggest changes without executing a refactor.
 
 ## Publish the local reading edition
 

@@ -1,4 +1,4 @@
-# Refactoring Skills
+# RetroDocumentation Skills
 
 A collection of skills for understanding and refactoring existing projects. The Retrodoc suite produces feature-oriented documentation, written from the outside in: features are discovered from what users interact with (UI screens, otherwise APIs or CLI commands), documented functionally first, then enriched from source code, questions to the user and optional Playwright runs. It is meant for humans and LLMs preparing to copy behavior or refactor implementations.
 
